@@ -1,5 +1,5 @@
-*.out
-*.o
-*.elf
+*.iml
 *.geany
-build
+build/
+.gradle/
+.idea/
