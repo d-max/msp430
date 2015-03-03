@@ -2,15 +2,6 @@
 #include "servo.h"
 
 void _configure_servos() {
-	/* config timer A */
-	// set time of pdm one iteration - 1/50 of secund
-	TACCR0 = PDM_PERIOD_TIME;
-	// enable interruption caused by CCR0 value
-	TACCTL0 = CCIE;
-	
-	
-	
-	// reset 
     OUT_PORT = 0;                               // обнуляем регистр
     OUT_DIR = SERVO;                            // устанавливаем на выход пин 6
 

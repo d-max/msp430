@@ -18,7 +18,7 @@ void _configure() {
     WDTCTL = WDTPW + WDTHOLD;                   // отключаем сторожевой таймер
 
     BCSCTL1 = CALBC1_1MHZ;                      // используем откалиброваную частоту для 1MHZ
-    DCOCTL = CALDCO_1MHZ;
+    DCOCTL = CALDCO_1MHZ;  
 }
 
 //~
