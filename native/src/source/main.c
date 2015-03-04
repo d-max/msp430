@@ -11,8 +11,9 @@ int main(void) {
 	// initial mcu config
     _configure();
     
-    // servo config
+    // config periphery
     _configure_servos();
+    _configure_bluetooth();
 
 	// low power mode
     _BIS_SR(LPM0_bits);
