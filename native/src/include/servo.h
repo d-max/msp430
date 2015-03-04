@@ -1,11 +1,33 @@
+/* 
+ frequency = 12 Mhz
+ divider = 4
+ clock rate = 3 000 000
  
-#define PDM_MAX_TIME 2400 // nano sec
-#define PDM_MIN_TIME 500  // nano sec
-#define PDM_PERIOD_TIME 20000 // ??? need to calculate
+ pwm frequency = 50 Hz (1/50 sec)
+ pwm period = 3 000 000 / 50 = 60 000
+ timer CCR0 = pwm period / servo count = 60 000 / 3 = 20 000
+*/
+
+#define SRV_COUNT 3
+#define PWM_MAX_TIME 7200	// 2400 microsec * 3
+#define PWM_MIN_TIME 1500	// 500 microsec * 3
+#define PWM_PERIOD_TIME 20000
+
+enum out {
+	PORT1 = 1,
+	PORT2 = 2
+};
 
 struct servo {
-	int out_port;
-	int pdm_time;
-}
+	int port; // out enum values
+	int bit;
+	int pwm_time;
+};
+struct servo servos[SRV_COUNT];
+
 	 
 void _configure_servos();
+
+struct servo * currentServo();
+
+struct servo * nextServo();
