@@ -1,5 +1,6 @@
 #include <msp430g2553.h>
 #include "servo.h"
+//#include "bluetooth.h"
 
 //~
 
@@ -13,9 +14,8 @@ int main(void) {
     
     // config periphery
     _configure_servos();
-    _configure_bluetooth();
 
-	// low power mode
+    // low power mode
     _BIS_SR(LPM0_bits);
 }
 

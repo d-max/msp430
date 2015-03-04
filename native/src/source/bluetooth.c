@@ -9,6 +9,7 @@
 
 
 #include "bluetooth.h"
+#include "servo.h"
 
 void _configure_bluetooth() {
 	/* from previous */
