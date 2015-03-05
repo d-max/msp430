@@ -4,28 +4,26 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.SeekBar;
 
-import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.Closeable;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.util.Set;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.util.UUID;
 
-public class MainActivity extends Activity implements AdapterView.OnItemClickListener {
+public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeListener {
 
-    private static final int REQUEST_ENABLE_BT = 1;
+    private static final String DEVICE = "94:51:03:0A:8B:1F";
+    private static final String UUID = "00001101-0000-1000-8000-00805F9B34FB";
 
-    private BluetoothAdapter btAdapter;
-    private ArrayAdapter<BluetoothDevice> adapter;
+    private BluetoothAdapter adapter;
+
+    private BufferedWriter out;
+    private InputStream in;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,80 +31,120 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
         setContentView(R.layout.main);
 
-        adapter = new ArrayAdapter<BluetoothDevice>(this, android.R.layout.test_list_item);
-        ListView view = (ListView) findViewById(R.id.list);
-        view.setAdapter(adapter);
-        view.setOnItemClickListener(this);
-
-        btAdapter = BluetoothAdapter.getDefaultAdapter();
-
-        if (!btAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        } else {
-            showBtDevices();
-        }
+        initSeekBar(R.id.servo1);
+        initSeekBar(R.id.servo2);
+        initSeekBar(R.id.servo3);
+        initSeekBar(R.id.servo4);
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK && requestCode == REQUEST_ENABLE_BT) {
-            showBtDevices();
-        }
-    }
+    protected void onStart() {
+        super.onStart();
 
-    private void showBtDevices() {
-        Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
-        if (pairedDevices.size() > 0) {
-            for (BluetoothDevice device : pairedDevices) {
-                adapter.add(device);
-            }
-        }
+        adapter = BluetoothAdapter.getDefaultAdapter();
+        adapter.enable();
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        BluetoothDevice selected = adapter.getItem(position);
+    protected void onStop() {
+        super.onStop();
 
+        adapter.disable();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        BluetoothDevice device = adapter.getRemoteDevice(DEVICE);
         BluetoothSocket socket = null;
-        try {
-            UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-            socket = selected.createRfcommSocketToServiceRecord(uuid);
-        } catch (IOException e) {
-            Log.d("TAG", "1");
-            e.printStackTrace();
-        }
+        out = null;
+        in = null;
 
-        btAdapter.cancelDiscovery();
+        if (device == null) return;
 
         try {
+            UUID uuid = java.util.UUID.fromString(UUID);
+            socket = device.createInsecureRfcommSocketToServiceRecord(uuid);
             socket.connect();
-
+            in = socket.getInputStream();
+            out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         } catch (IOException e) {
-            Log.d("TAG", "2");
-            e.printStackTrace();
-        }
-
-        try {
-            OutputStream stream = socket.getOutputStream();
-            stream.write('a');
-            stream.flush();
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String str = in.readLine();
-
-            Toast.makeText(this, str, Toast.LENGTH_LONG).show();
-
-            socket.close();
-        } catch (IOException e) {
-            Log.d("TAG", "3");
             e.printStackTrace();
         } finally {
+            close(out);
+            close(in);
+            close(socket);
+        }
+    }
+
+    private void close(Closeable closeable) {
+        if (closeable != null) {
             try {
-                socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+                closeable.close();
+            } catch (Exception ex) {
+                // silent
             }
+        }
+    }
+
+    private void initSeekBar(int id) {
+        SeekBar seekBar = (SeekBar) findViewById(id);
+        seekBar.setOnSeekBarChangeListener(this);
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        int value = seekBar.getProgress() * 57 + 1500;
+        switch (seekBar.getId()) {
+            case R.id.servo1: {
+                new Sender().execute(1, value);
+                return;
+            }
+            case R.id.servo2: {
+                new Sender().execute(2, value);
+                return;
+            }
+            case R.id.servo3: {
+                new Sender().execute(3, value);
+                return;
+            }
+            case R.id.servo4: {
+                new Sender().execute(4, value);
+                return;
+            }
+        }
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {}
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {}
+
+    class Sender extends AsyncTask<Integer, Void, Void> {
+
+        int current = 0;
+        String[] messages = new String[3];
+
+        @Override
+        protected Void doInBackground(Integer... params) {
+            messages[0] = "S" + params[0] + "\n";
+            messages[1] = "T" + params[1] + "\n";
+            messages[2] = "P\n";
+
+            while (current < 3) {
+                try {
+                    out.write(messages[current]);
+                    out.flush();
+                    if (in.read() == 1) {
+                        current ++;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
         }
     }
 }
