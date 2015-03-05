@@ -8,7 +8,7 @@ OUT = build
 export OBJ
 OBJ += $(OUT)/servo.o
 OBJ += $(OUT)/main.o
-#OBJ += $(OUT)/bluetooth.o
+OBJ += $(OUT)/bluetooth.o
 
 flash: $(OUT)/firmware.elf
 	@echo "Flashing";\

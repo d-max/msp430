@@ -7,9 +7,21 @@
  1250 ~ 255 + 4 * 125 = 1279
 */
 
-
 #include "bluetooth.h"
 #include "servo.h"
+
+struct bt_command {
+	int leg;
+	int srv;
+	int time;
+} command;
+
+int head = 0;
+char rx_buffer[BUFFER_SIZE];
+
+void message_ready();
+
+void perform_command();
 
 void _configure_bluetooth() {
 	/* from previous */
@@ -18,10 +30,10 @@ void _configure_bluetooth() {
 	
 	
 	// use pins as UART
-	P1SEL |= RXD + TXD;
-	P1SEL2 |= RXD + TXD;
+	P1SEL |= RX + TX;
+	P1SEL2 |= RX + TX;
 	// init pins
-	P1DIR |= RXLED + TXLED;
+	P1DIR |= RXLED;
 	P1OUT &= 0;
 	/* init UART */
 	// use sub-main clock
@@ -35,38 +47,72 @@ void _configure_bluetooth() {
     UC0IE |= UCA0RXIE;
 }
 
-#pragma vector=USCIAB0RX_VECTOR
+#pragma vector = USCIAB0RX_VECTOR
 __interrupt void UART_RECEIVE(void) {
 	// turn on RX led
 	P1OUT |= RXLED;
 	
-	
+	char data = UCA0RXBUF;
+	rx_buffer[head++] = data;
+	if (data == '\n') {
+		// handle message
+		message_ready();
+		// reset buffer
+		head = 0;
+		// send 'ok'
+		UCA0TXBUF = 1;
+	}
 	
 	// turn off RX led
 	P1OUT &= ~RXLED;
 }
 
-#pragma vector=USCIAB0TX_VECTOR
-__interrupt void UART_SEND(void) {
-	// turn on TX led
-	P1OUT |= TXLED;
+void message_ready() {
+	char key = rx_buffer[0];
+	int value = atoi(&rx_buffer[1]);
 	
-	
-	
-	// turn off TX led
-	P1OUT &= ~TXLED;
+	switch (key) {
+		case MSG_LEG:
+			command.leg = value;
+			break;
+		case MSG_SERVO:
+			command.srv = value;
+			break;
+		case MSG_TIME:
+			command.time = value;
+			break;
+		case MSG_PERFORM:
+			perform_command();
+			break;
+	}
 }
 
+void perform_command() {
+	servos[command.srv].pwm_time = command.time;
+}
 
 //~ ***********************************
 
-
-// Check buffer
-// http://www.ti.com/lit/ug/slau144j/slau144j.pdf
-// 434 page 
-// UCA1TXIFG
-// UCA1RXIFG 
-
-//  buffer
-// UCA0TXBUF
-// UCA0TXBUF
+/*
+#pragma vector=USCIAB0TX_VECTOR
+__interrupt void USCI0TX_ISR(void)
+{
+   P1OUT |= TXLED; 
+     UCA0TXBUF = string[i++]; // TX next character 
+    if (i == sizeof string - 1) // TX over? 
+       UC0IE &= ~UCA0TXIE; // Disable USCI_A0 TX interrupt 
+    P1OUT &= ~TXLED; } 
+   
+#pragma vector=USCIAB0RX_VECTOR 
+__interrupt void USCI0RX_ISR(void) 
+{ 
+   P1OUT |= RXLED; 
+    if (UCA0RXBUF == 'a') // 'a' received?
+    { 
+       i = 0; 
+       UC0IE |= UCA0TXIE; // Enable USCI_A0 TX interrupt 
+      UCA0TXBUF = string[i++]; 
+    } 
+    P1OUT &= ~RXLED;
+}
+*/

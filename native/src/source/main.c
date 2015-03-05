@@ -1,6 +1,6 @@
 #include <msp430g2553.h>
 #include "servo.h"
-//#include "bluetooth.h"
+#include "bluetooth.h"
 
 //~
 
