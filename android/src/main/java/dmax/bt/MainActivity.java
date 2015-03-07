@@ -10,13 +10,16 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.SeekBar;
 
-import java.io.BufferedWriter;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.UUID;
 
 import static android.bluetooth.BluetoothAdapter.*;
@@ -28,7 +31,7 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
 
     private BluetoothAdapter adapter;
 
-    private BufferedWriter out;
+    private OutputStream out;
     private InputStream in;
     private BroadcastReceiver receiver;
 
@@ -94,10 +97,14 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
         in = null;
         try {
             UUID uuid = java.util.UUID.fromString(UUID);
-            socket = device.createInsecureRfcommSocketToServiceRecord(uuid);
+            socket = device.createRfcommSocketToServiceRecord(uuid);
             socket.connect();
+
+            out = socket.getOutputStream();
             in = socket.getInputStream();
-            out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+
+//            in = socket.getInputStream();
+//            out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         } catch (IOException e) {
             e.printStackTrace();
             close(out);
@@ -126,19 +133,19 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
         int value = seekBar.getProgress() * 57 + 1500;
         switch (seekBar.getId()) {
             case R.id.servo1: {
-                new Sender().execute(1, value);
+                new Sender().execute(0, value);
                 return;
             }
             case R.id.servo2: {
-                new Sender().execute(2, value);
+                new Sender().execute(1, value);
                 return;
             }
             case R.id.servo3: {
-                new Sender().execute(3, value);
+                new Sender().execute(2, value);
                 return;
             }
             case R.id.servo4: {
-                new Sender().execute(4, value);
+                new Sender().execute(3, value);
                 return;
             }
         }
@@ -157,22 +164,29 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
 
         @Override
         protected Void doInBackground(Integer... params) {
-            messages[0] = "S" + params[0] + "\n";
-            messages[1] = "T" + params[1] + "\n";
-            messages[2] = "P\n";
-
-            while (current < 3) {
-                if (out == null) return null;
-                try {
-                    out.write(messages[current]);
-                    out.flush();
-                    if (in.read() == 1) {
-                        current ++;
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            try {
+                out.write(String.valueOf(params[1] + "\n").getBytes());
+                out.flush();
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
+//            messages[0] = "S" + params[0] + "\n";
+//            messages[1] = "T" + params[1] + "\n";
+//            messages[2] = "P\n";
+//
+//            while (current < 3) {
+//                if (out == null) return null;
+//                try {
+//                    out.write(messages[current]);
+//                    out.write(messages[current++]);
+//                    out.flush();
+//                    if (in.read() == 1) {
+//                        current ++;
+//                    }
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
             return null;
         }
     }

@@ -4,16 +4,15 @@
 void _configure_servos() {
 	/* config servos */
 	servos[0].port = PORT1;
-	servos[0].bit = BIT6;
-	servos[0].pwm_time = PWM_MAX_TIME;
+	servos[0].bit = BIT0;
+	servos[0].pwm_time = PWM_MIN_TIME;
 
-	servos[1].port = PORT1;
-	servos[1].bit = BIT7;
-	servos[1].pwm_time = PWM_MAX_TIME;
+//	servos[1].port = PORT1;
+//	servos[1].bit = BIT7;
+//	servos[1].pwm_time = PWM_MAX_TIME;
 
 	// config pins
-	P1OUT = 0;
-	P1DIR = servos[0].bit + servos[1].bit;
+	P1DIR |= servos[0].bit;// + servos[1].bit;
 
 	/* config timer A */
 	// set time of pdm one iteration - 1/50 of second
@@ -39,34 +38,39 @@ struct servo * currentServo() {
 
 #pragma vector = TIMER0_A0_VECTOR
 __interrupt void CCR0_ISR(void) {
-    struct servo *s = nextServo();
-    // set pwm duration time
-    TACCR1 = (*s).pwm_time;
-    // set out pin bit to 1 
-    switch ((*s).port) {
-		case PORT1:
-			P1OUT |= (*s).bit;
-			break;
-		case PORT2:
-			P2OUT |= (*s).bit;
-			break;
-    }
+//    struct servo *s = nextServo();
+//    // set pwm duration time
+//    TACCR1 = (*s).pwm_time;
+//    // set out pin bit to 1
+//    switch ((*s).port) {
+//		case PORT1:
+//			P1OUT |= (*s).bit;
+//			break;
+//		case PORT2:
+//			P2OUT |= (*s).bit;
+//			break;
+//    }
+
+    TACCR1 = servos[0].pwm_time;
+    P1OUT |= servos[0].bit;
     // reset interruption flag
     TA0CCTL0 &= ~CCIFG;
 }
 
 #pragma vector = TIMER0_A1_VECTOR
 __interrupt void CCR1_ISR(void) {
-    struct servo *s = currentServo();
-    // set out pin bit to 0 
-    switch ((*s).port) {
-		case PORT1:
-			P1OUT &= ~(*s).bit;
-			break;
-		case PORT2:
-			P2OUT &= ~(*s).bit;
-			break;
-    }
+//    struct servo *s = currentServo();
+//    // set out pin bit to 0
+//    switch ((*s).port) {
+//		case PORT1:
+//			P1OUT &= ~(*s).bit;
+//			break;
+//		case PORT2:
+//			P2OUT &= ~(*s).bit;
+//			break;
+//    }
+
+    P1OUT &= ~servos[0].bit;
     // reset interruption flag
     TA0CCTL1 &= ~CCIFG;
 }

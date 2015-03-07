@@ -14,6 +14,7 @@ int main(void) {
     
     // config periphery
     _configure_servos();
+    _configure_bluetooth();
 
     // low power mode
     _BIS_SR(LPM0_bits);
@@ -26,4 +27,7 @@ void _configure() {
     // use frequency 12 MHz
     BCSCTL1 = CALBC1_12MHZ;
     DCOCTL = CALDCO_12MHZ;
+
+    P1OUT = 0;
+    P2OUT = 0;
 }

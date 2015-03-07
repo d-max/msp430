@@ -11,7 +11,7 @@
 #define SRV_COUNT 2
 #define PWM_MAX_TIME 7200	// 2400 microsec * 3
 #define PWM_MIN_TIME 1500	// 500 microsec * 3
-#define PWM_PERIOD_TIME 30000
+#define PWM_PERIOD_TIME 60000
 
 enum out {
 	PORT1 = 1,
