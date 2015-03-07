@@ -4,6 +4,10 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.SeekBar;
@@ -15,15 +19,18 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.UUID;
 
+import static android.bluetooth.BluetoothAdapter.*;
+
 public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeListener {
 
-    private static final String DEVICE = "94:51:03:0A:8B:1F";
+    private static final String DEVICE = "00:12:06:21:88:70";
     private static final String UUID = "00001101-0000-1000-8000-00805F9B34FB";
 
     private BluetoothAdapter adapter;
 
     private BufferedWriter out;
     private InputStream in;
+    private BroadcastReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +56,7 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
     protected void onStop() {
         super.onStop();
 
+        if (receiver != null) unregisterReceiver(receiver);
         adapter.disable();
     }
 
@@ -56,13 +64,34 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
     protected void onResume() {
         super.onResume();
 
-        BluetoothDevice device = adapter.getRemoteDevice(DEVICE);
+        if (adapter.isEnabled()) {
+            onReady();
+        } else {
+            receiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    if (intent.getIntExtra(EXTRA_STATE, -1) == STATE_ON) {
+                        onReady();
+                    }
+                }
+            };
+            registerReceiver(receiver, new IntentFilter(ACTION_STATE_CHANGED));
+        }
+    }
+
+    private void onReady() {
+        BluetoothDevice device = null;
+        for (BluetoothDevice d : adapter.getBondedDevices()) {
+            if (d.getAddress().equals(DEVICE)) {
+                device = d;
+                break;
+            }
+        }
+        if (device == null) return;
+
         BluetoothSocket socket = null;
         out = null;
         in = null;
-
-        if (device == null) return;
-
         try {
             UUID uuid = java.util.UUID.fromString(UUID);
             socket = device.createInsecureRfcommSocketToServiceRecord(uuid);
@@ -71,7 +100,6 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
             out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
             close(out);
             close(in);
             close(socket);
@@ -134,6 +162,7 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
             messages[2] = "P\n";
 
             while (current < 3) {
+                if (out == null) return null;
                 try {
                     out.write(messages[current]);
                     out.flush();
