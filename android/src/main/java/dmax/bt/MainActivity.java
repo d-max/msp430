@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -125,12 +126,14 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
 
     private void initSeekBar(int id) {
         SeekBar seekBar = (SeekBar) findViewById(id);
+        seekBar.setMax(180);
         seekBar.setOnSeekBarChangeListener(this);
     }
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-        int value = seekBar.getProgress() * 57 + 1500;
+        int value = seekBar.getProgress();
+        Toast.makeText(this, value + "", Toast.LENGTH_SHORT).show();
         switch (seekBar.getId()) {
             case R.id.servo1: {
                 new Sender().execute(0, value);
@@ -159,13 +162,12 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
 
     class Sender extends AsyncTask<Integer, Void, Void> {
 
-        int current = 0;
-        String[] messages = new String[3];
-
         @Override
         protected Void doInBackground(Integer... params) {
             try {
-                out.write(String.valueOf(params[1] + "\n").getBytes());
+                String message = String.format("S%02dA%03d\n", params);
+                Log.d("###", message);
+                out.write(message.getBytes());
                 out.flush();
             } catch (IOException ex) {
                 ex.printStackTrace();

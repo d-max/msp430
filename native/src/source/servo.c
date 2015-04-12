@@ -4,24 +4,25 @@
 void _configure_servos() {
 	/* config servos */
 	servos[0].port = PORT1;
-	servos[0].bit = BIT0;
+	servos[0].bit = BIT7;
 	servos[0].pwm_time = PWM_MIN_TIME;
-
-//	servos[1].port = PORT1;
-//	servos[1].bit = BIT7;
-//	servos[1].pwm_time = PWM_MAX_TIME;
+	
+	servos[1].port = PORT1;
+	servos[1].bit = BIT6;
+	servos[1].pwm_time = PWM_MIN_TIME;
 
 	// config pins
-	P1DIR |= servos[0].bit;// + servos[1].bit;
+	P1DIR |= servos[0].bit + servos[1].bit;
 
 	/* config timer A */
+	// sub-main clock + 4-divider + up mode + initialize
+	TACTL = TASSEL_2 + ID_2 + MC_1 + TACLR;
 	// set time of pdm one iteration - 1/50 of second
 	TACCR0 = PWM_PERIOD_TIME;
 	// enable interruption caused by CCR0 and CCR1 values
 	TACCTL0 = CCIE;
 	TACCTL1 = CCIE;
-	// sub-main clock + 4-divider + up mode + initialize
-	TACTL = TASSEL_2 + ID_2 + MC_1 + TACLR;
+	
 	// enable interruptions
 	_BIS_SR(GIE);
 }
@@ -51,10 +52,8 @@ __interrupt void CCR0_ISR(void) {
 //			break;
 //    }
 
+	P1OUT |= servos[0].bit + servos[1].bit;
     TACCR1 = servos[0].pwm_time;
-    P1OUT |= servos[0].bit;
-    // reset interruption flag
-    TA0CCTL0 &= ~CCIFG;
 }
 
 #pragma vector = TIMER0_A1_VECTOR
@@ -71,6 +70,7 @@ __interrupt void CCR1_ISR(void) {
 //    }
 
     P1OUT &= ~servos[0].bit;
+    P1OUT &= ~servos[1].bit;
     // reset interruption flag
-    TA0CCTL1 &= ~CCIFG;
+    TACCTL1 &= ~CCIFG;
 }

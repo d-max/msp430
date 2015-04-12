@@ -1,13 +1,11 @@
 #include <msp430g2553.h>
 
+#define BT_OUT P1OUT
 #define TX BIT1
 #define RX BIT2
-#define BUFFER_SIZE 10
-#define MSG_LEG 'L'
-#define MSG_SERVO 'S'
-#define MSG_TIME 'T'
-#define MSG_PERFORM 'P'
-
+#define CMD_BUFFER_SIZE 8
+#define ID_BUFFER_SIZE 3
+#define ANGLE_BUFFER_SIZE 4
 
 void _configure_bluetooth();
 
