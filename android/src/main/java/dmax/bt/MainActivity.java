@@ -103,9 +103,6 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
 
             out = socket.getOutputStream();
             in = socket.getInputStream();
-
-//            in = socket.getInputStream();
-//            out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         } catch (IOException e) {
             e.printStackTrace();
             close(out);
@@ -172,23 +169,6 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-//            messages[0] = "S" + params[0] + "\n";
-//            messages[1] = "T" + params[1] + "\n";
-//            messages[2] = "P\n";
-//
-//            while (current < 3) {
-//                if (out == null) return null;
-//                try {
-//                    out.write(messages[current]);
-//                    out.write(messages[current++]);
-//                    out.flush();
-//                    if (in.read() == 1) {
-//                        current ++;
-//                    }
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
             return null;
         }
     }
