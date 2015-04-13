@@ -37,6 +37,10 @@ struct servo * currentServo() {
 	return &servos[srv_index];
 }
 
+int angle_to_time(int angle) {
+	return angle * ONE_DEGREE_TIME + PWM_MIN_TIME;
+}
+
 #pragma vector = TIMER0_A0_VECTOR
 __interrupt void CCR0_ISR(void) {
     struct servo *s = nextServo();

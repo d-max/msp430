@@ -1,12 +1,3 @@
-/* 
- frequency = 12 Mhz
- baud rate (uart speed) = 9600
-
- from table (page 424), UCBR0 = 1250
- UCBR0 = UCA0BR0 + UCA0BR1 * 256
- 1250 ~ 255 + 4 * 125 = 1279
-*/
-
 #include "bluetooth.h"
 #include "servo.h"
 
@@ -15,19 +6,26 @@ char rx_buffer[CMD_BUFFER_SIZE];
 
 void message_ready();
 
+int str_to_int(char *string, int begin, int end);
+
+int pow_decimal(int degree);
+
+int angle_to_time(int anlge);
+
+
 void _configure_bluetooth() {
 	// use pins as UART
-	P1SEL |= RX + TX;
-	P1SEL2 |= RX + TX;
+	P1SEL |= BT_RX + BT_TX;
+	P1SEL2 |= BT_RX + BT_TX;
 	// init pins
-	BT_OUT &= ~RX;
-	BT_OUT &= ~TX;
+	BT_OUT &= ~BT_RX;
+	BT_OUT &= ~BT_TX;
 	/* init UART */
 	// use sub-main clock
 	UCA0CTL1 |= UCSSEL_2;
 	// set uart speed
-    UCA0BR0 = 0xFF;
-    UCA0BR1 = 0x04;
+    UCA0BR0 = BT_UART_SPEED;
+    UCA0BR1 = BT_UART_CORRECTION;
     // init uart state machine
     UCA0CTL1 &= ~UCSWRST;
     // enable RX interruption
@@ -36,9 +34,11 @@ void _configure_bluetooth() {
 
 #pragma vector = USCIAB0RX_VECTOR
 __interrupt void UART_RECEIVE(void) {
+	// collect received byte into buffer
 	char data = UCA0RXBUF;   
 	rx_buffer[head++] = data;
     
+    // end of command message
     if (data == '\n') {
 		message_ready();
 		head = 0;
@@ -46,53 +46,55 @@ __interrupt void UART_RECEIVE(void) {
 }
 
 void message_ready() {
-	// TODO optimize with pointers
-	char id[ID_BUFFER_SIZE];
-	char angle[ANGLE_BUFFER_SIZE];
-	
-	int ptr = 0;
-	while (rx_buffer[ptr] != '\n') {
-		switch (rx_buffer[ptr]) {
+	int servo_id, angle, *current;
+	int begin, end, cursor = 0;
+	while (cursor < CMD_BUFFER_SIZE) {
+		switch (rx_buffer[cursor++]) {
 			case 'S':
-				id[0] = rx_buffer[ptr + 1];
-				id[1] = rx_buffer[ptr + 2];
-				id[2] = '\n';
-				ptr += 3;
-				break;	
+				// next chars are servo id
+				current = &servo_id;
+				begin = cursor;
+				end = cursor;
+				break;
 			case 'A':
-				angle[0] = rx_buffer[ptr + 1];
-				angle[1] = rx_buffer[ptr + 2];
-				angle[2] = rx_buffer[ptr + 3];
-				angle[3] = '\n';
-				ptr += 4;
+				// end of servo id - convert to int
+				*current = str_to_int(rx_buffer, begin, end);
+				// next chars are angle value
+				current = &angle;
+				begin = cursor;
+				end = cursor;
+				break;
+			case '\n':
+				// end of angle value - convert to int
+				*current = str_to_int(rx_buffer, begin, end);
+				break;
+			default:
+				end++;
 				break;
 		}
 	}
-	int srv_id = atoi(&id[0]);
-	int time = atoi(&angle[0]) * 32 + PWM_MIN_TIME;
-	
-	servos[srv_id].pwm_time = time;
+	// update servo configuration
+	servos[servo_id].pwm_time = angle_to_time(angle);
 }
 
-//~ ***********************************
-
-/*
-#pragma vector=USCIAB0RX_VECTOR
-__interrupt void UART_RECEIVE(void)
-{
-   if (UCA0RXBUF == 'u') // 'a' received?
-   {
-      i = 0;
-      UC0IE |= UCA0TXIE; // Enable USCI_A0 TX interrupt
-      UCA0TXBUF = string[i++];
-   }
+/* converts part of string into integer. range is from begin(inclusive) to end(exclusive) */
+int str_to_int(char *string, int begin, int end) {
+	int result = 0;
+	int count = 0;
+	char *p;
+	while (begin <= --end) {
+		p = &string[end];
+		result += (*p - '0') * pow_decimal(count++);
+	}
+	return result;
 }
 
-#pragma vector=USCIAB0TX_VECTOR
-__interrupt void UART_SEND(void)
-{
-   UCA0TXBUF = string[i++]; // TX next character
-   if (i == sizeof string - 1) // TX over?
-      UC0IE &= ~UCA0TXIE; // Disable USCI_A0 TX interrupt
+/* returns 10 ^ degree */
+int pow_decimal(int degree) {
+	int result = 1;
+	int i = 0;
+	while (i++ < degree) {
+		result = result * 10;
+	}
+	return result;
 }
-*/
