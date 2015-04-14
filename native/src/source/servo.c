@@ -16,36 +16,62 @@ void _configure_servos() {
 
 	/* config timer A */
 	// sub-main clock + 4-divider + up mode + initialize
-	TACTL = TASSEL_2 + ID_2 + MC_1 + TACLR;
+	TA0CTL = TASSEL_2 + ID_2 + MC_1 + TACLR;
 	// set time of pdm one iteration - 1/50 of second
-	TACCR0 = PWM_PERIOD_TIME;
+	TA0CCR0 = PWM_PERIOD_TIME_A;
 	// enable interruption caused by CCR0 and CCR1 values
-	TACCTL0 = CCIE;
-	TACCTL1 = CCIE;
+	TA0CCTL0 = CCIE;
+	TA0CCTL1 = CCIE;
+
+	/* config timer B */
+	/*
+	// sub-main clock + 4-divider + up mode + initialize
+	TA1CTL = TASSEL_2 + ID_2 + MC_1 + TACLR;
+	// set time of pdm one iteration - 1/50 of second
+	TA1CCR0 = PWM_PERIOD_TIME_B;
+	// enable interruption caused by CCR0 and CCR1 values
+	TA1CCTL0 = CCIE;
+	TA1CCTL1 = CCIE;
+	*/
 	
 	// enable interruptions
 	_BIS_SR(GIE);
 }
 
-int srv_index = 0;
-struct servo * nextServo() {
-	if (++srv_index >= SRV_COUNT) srv_index = 0;
-	return currentServo();
+//~
+
+int srv_a_index = 0;
+int srv_b_index = SRV_GROUP;
+
+struct servo * next_servo(enum group grp) {
+	switch (grp) {
+		case GROUP_A:
+			srv_a_index ++;
+			if (srv_a_index >= SRV_GROUP) srv_a_index = 0;
+			break;
+		case GROUP_B:
+			srv_b_index ++;
+			if (srv_b_index >= SRV_COUNT) srv_b_index = SRV_GROUP;
+			break;
+	}
+	return current_servo(grp);
 }
 
-struct servo * currentServo() {
-	return &servos[srv_index];
+struct servo * current_servo(enum group grp) {
+	int *index;
+	switch (grp) {
+		case GROUP_A: index = &srv_a_index; break;
+		case GROUP_B: index = &srv_b_index; break;
+	}
+	return &servos[*index];
 }
 
 int angle_to_time(int angle) {
 	return angle * ONE_DEGREE_TIME + PWM_MIN_TIME;
 }
 
-#pragma vector = TIMER0_A0_VECTOR
-__interrupt void CCR0_ISR(void) {
-    struct servo *s = nextServo();
-    // set out pin bit to 1
-    switch ((*s).port) {
+void servo_pin_on(struct servo *s) {
+	switch ((*s).port) {
 		case PORT1:
 			P1OUT |= (*s).bit;
 			break;
@@ -53,15 +79,10 @@ __interrupt void CCR0_ISR(void) {
 			P2OUT |= (*s).bit;
 			break;
     }
-	// set pwm duration time
-    TACCR1 = (*s).pwm_time;
 }
 
-#pragma vector = TIMER0_A1_VECTOR
-__interrupt void CCR1_ISR(void) {
-    struct servo *s = currentServo();
-    // set out pin bit to 0
-    switch ((*s).port) {
+void servo_pin_off(struct servo *s) {
+	switch ((*s).port) {
 		case PORT1:
 			P1OUT &= ~(*s).bit;
 			break;
@@ -69,6 +90,23 @@ __interrupt void CCR1_ISR(void) {
 			P2OUT &= ~(*s).bit;
 			break;
     }
+}
+
+//~
+
+#pragma vector = TIMER0_A0_VECTOR
+__interrupt void T0_CCR0_ISR(void) {
+    struct servo *s = next_servo(GROUP_A);
+    servo_pin_on(s);
+	// set pwm duration time
+    TACCR1 = (*s).pwm_time;
+}
+
+#pragma vector = TIMER0_A1_VECTOR
+__interrupt void T0_CCR1_ISR(void) {
+    struct servo *s = current_servo(GROUP_A);
+    // set out pin bit to 0
+    servo_pin_off(s);
     // reset interruption flag
     TACCTL1 &= ~CCIFG;
 }
