@@ -8,12 +8,12 @@
  timer CCR0 = pwm period / servo count = 60 000 / 2 = 30 000
 */
 
-#define SRV_COUNT 2
+#define SRV_COUNT 3
 #define SRV_GROUP 2				// managed by timer A
 #define PWM_MAX_TIME 7200		// 2400 microsec * 3
 #define PWM_MIN_TIME 1500		// 500 microsec * 3
 #define PWM_PERIOD_TIME_A 30000 // 2 servo
-//#define PWM_PERIOD_TIME_B 60000 // 1 servo
+#define PWM_PERIOD_TIME_B 60000 // 1 servo
 #define ONE_DEGREE_TIME 32 		// (7200 - 1500) / 180
 
 enum group {
