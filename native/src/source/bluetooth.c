@@ -1,18 +1,6 @@
 #include "bluetooth.h"
 #include "servo.h"
 
-int head = 0;
-char rx_buffer[CMD_BUFFER_SIZE];
-
-void message_ready();
-
-int str_to_int(char *string, int begin, int end);
-
-int pow_decimal(int degree);
-
-int angle_to_time(int anlge);
-
-
 void _configure_bluetooth() {
 	// use pins as UART
 	P1SEL |= BT_RX + BT_TX;
@@ -32,18 +20,10 @@ void _configure_bluetooth() {
     UC0IE |= UCA0RXIE;
 }
 
-#pragma vector = USCIAB0RX_VECTOR
-__interrupt void UART_RECEIVE(void) {
-	// collect received byte into buffer
-	char data = UCA0RXBUF;   
-	rx_buffer[head++] = data;
-    
-    // end of command message
-    if (data == '\n') {
-		message_ready();
-		head = 0;
-	}
-}
+//~
+
+int head = 0;
+char rx_buffer[CMD_BUFFER_SIZE];
 
 void message_ready() {
 	int servo_id, angle, *current;
@@ -97,4 +77,19 @@ int pow_decimal(int degree) {
 		result = result * 10;
 	}
 	return result;
+}
+
+//~
+
+#pragma vector = USCIAB0RX_VECTOR
+__interrupt void UART_RECEIVE(void) {
+	// collect received byte into buffer
+	char data = UCA0RXBUF;
+	rx_buffer[head++] = data;
+
+    // end of command message
+    if (data == '\n') {
+		message_ready();
+		head = 0;
+	}
 }
