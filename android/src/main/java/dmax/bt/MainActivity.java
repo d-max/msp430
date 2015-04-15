@@ -130,7 +130,6 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         int value = seekBar.getProgress();
-        Toast.makeText(this, value + "", Toast.LENGTH_SHORT).show();
         switch (seekBar.getId()) {
             case R.id.servo1: {
                 new Sender().execute(0, value);
@@ -163,9 +162,12 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
         protected Void doInBackground(Integer... params) {
             try {
                 String message = String.format("S%02dA%03d\n", params);
-                Log.d("###", message);
+                Log.d("###", "message " + message);
                 out.write(message.getBytes());
                 out.flush();
+
+                int response = in.read();
+                Log.d("###", "response " + response);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }

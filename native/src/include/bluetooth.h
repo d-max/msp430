@@ -15,6 +15,8 @@
 #define BT_UART_SPEED 0xFF
 #define BT_UART_CORRECTION 0x04
 #define CMD_BUFFER_SIZE 8
+#define BT_RESPONSE_OK 1
+#define BT_RESPONSE_FAILED 2
 
 void _configure_bluetooth();
 

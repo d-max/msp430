@@ -25,6 +25,12 @@ void _configure_bluetooth() {
 int head = 0;
 char rx_buffer[CMD_BUFFER_SIZE];
 
+int check_data_range(int *servo_id, int *angle) {
+	if (*servo_id < 0 || *servo_id >= SRV_COUNT) return 0;
+	if (*angle < 0 || *angle > 180) return 0;
+	return 1;
+}
+
 void message_ready() {
 	int servo_id, angle, *current;
 	int begin, end, cursor = 0;
@@ -53,8 +59,14 @@ void message_ready() {
 				break;
 		}
 	}
-	// update servo configuration
-	servos[servo_id].pwm_time = angle_to_time(angle);
+	if (check_data_range(&servo_id, &angle)) {
+		// update servo configuration
+		servos[servo_id].pwm_time = angle_to_time(angle);
+		// send response
+		UCA0TXBUF = BT_RESPONSE_OK;
+	} else {
+		UCA0TXBUF = BT_RESPONSE_FAILED;
+	}
 }
 
 /* converts part of string into integer. range is from begin(inclusive) to end(exclusive) */
