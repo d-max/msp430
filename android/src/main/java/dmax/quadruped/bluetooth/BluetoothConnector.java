@@ -12,6 +12,7 @@ import android.os.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.concurrent.CountDownLatch;
 
 import dmax.quadruped.Util;
 
@@ -23,6 +24,7 @@ import static android.bluetooth.BluetoothAdapter.*;
  */
 public class BluetoothConnector implements Constants {
 
+    private CountDownLatch lock = new CountDownLatch(1);
     private Context context;
     private HandlerThread worker;
     private Handler btHandler;
@@ -36,19 +38,28 @@ public class BluetoothConnector implements Constants {
     }
 
     public void connect() {
-        btHandler.obtainMessage(MESSAGE_CONNECT).sendToTarget();
+        getBtHandler().obtainMessage(MESSAGE_CONNECT).sendToTarget();
     }
 
     public void disconnect() {
-        btHandler.obtainMessage(MESSAGE_DISCONNECT).sendToTarget();
+        getBtHandler().obtainMessage(MESSAGE_DISCONNECT).sendToTarget();
     }
 
     public void send(BluetoothMessage message) {
-        btHandler.obtainMessage(MESSAGE_COMMAND, message.servoId, message.angle).sendToTarget();
+        getBtHandler().obtainMessage(MESSAGE_COMMAND, message.servoId, message.angle).sendToTarget();
     }
 
     public void quit() {
         this.worker.quit();
+    }
+
+    private Handler getBtHandler() {
+        try {
+            lock.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return btHandler;
     }
 
     //~
@@ -171,6 +182,7 @@ public class BluetoothConnector implements Constants {
         @Override
         protected void onLooperPrepared() {
             btHandler = new Handler(getLooper(), new MessagesProcessor());
+            lock.countDown();
         }
     }
 }
