@@ -3,66 +3,89 @@ package dmax.quadruped.ui;
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.SeekBar;
-import android.widget.Toast;
 
 import dmax.quadruped.R;
+import dmax.quadruped.bluetooth.BluetoothCallback;
+import dmax.quadruped.bluetooth.BluetoothConnector;
+import dmax.quadruped.bluetooth.BluetoothMessage;
 
 public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeListener {
+
+    private BluetoothConnector bluetooth;
+    private BluetoothCallback callback = new BluetoothCallback() {
+        @Override
+        public void onConnected() {
+            enableSeekBar(R.id.servo1, true);
+            enableSeekBar(R.id.servo2, true);
+            enableSeekBar(R.id.servo3, true);
+        }
+
+        @Override
+        public void onFailed() {
+            enableSeekBar(R.id.servo1, false);
+            enableSeekBar(R.id.servo2, false);
+            enableSeekBar(R.id.servo3, false);
+        }
+
+        @Override
+        public void onResponse(Response response) {
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        bluetooth = new BluetoothConnector(this, callback);
 
         setContentView(R.layout.main);
 
         initSeekBar(R.id.servo1);
         initSeekBar(R.id.servo2);
         initSeekBar(R.id.servo3);
-        initSeekBar(R.id.servo4);
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-
-
+    protected void onResume() {
+        super.onResume();
+        bluetooth.connect();
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        bluetooth.disconnect();
+        super.onPause();
+    }
 
-
+    @Override
+    protected void onDestroy() {
+        bluetooth.quit();
+        super.onDestroy();
     }
 
     private void initSeekBar(int id) {
         SeekBar seekBar = (SeekBar) findViewById(id);
         seekBar.setMax(180);
         seekBar.setOnSeekBarChangeListener(this);
+        seekBar.setEnabled(false);
+    }
+
+    private void enableSeekBar(int id, boolean enabled) {
+        findViewById(id).setEnabled(enabled);
     }
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         int value = seekBar.getProgress();
-        Toast.makeText(this, value + "", Toast.LENGTH_SHORT).show();
+        int id = -1;
         switch (seekBar.getId()) {
-            case R.id.servo1: {
-
-                return;
-            }
-            case R.id.servo2: {
-
-                return;
-            }
-            case R.id.servo3: {
-
-                return;
-            }
-            case R.id.servo4: {
-
-                return;
-            }
+            case R.id.servo1: id = 0; break;
+            case R.id.servo2: id = 1; break;
+            case R.id.servo3: id = 2; break;
         }
+        BluetoothMessage message = new BluetoothMessage(id, value);
+        bluetooth.send(message);
     }
 
     @Override
