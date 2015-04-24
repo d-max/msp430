@@ -12,7 +12,7 @@ void _configure_servos() {
 	servos[1].pwm_time = PWM_MIN_TIME;
 
 	servos[2].port = PORT2;
-	servos[2].bit = BIT0;
+	servos[2].bit = BIT5;
 	servos[2].pwm_time = PWM_MAX_TIME;
 
 	// config pins
