@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.*;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,6 +24,8 @@ import static android.bluetooth.BluetoothAdapter.*;
  * on 16.04.15 at 16:11
  */
 public class BluetoothConnector implements Constants {
+
+    private static final String TAG = "Quadruped";
 
     private CountDownLatch lock = new CountDownLatch(1);
     private Context context;
@@ -132,9 +135,10 @@ public class BluetoothConnector implements Constants {
         }
 
         private void onReady() {
+            Log.i(TAG, "Connect to bluetooth dongle");
             try {
                 BluetoothDevice device = adapter.getRemoteDevice(ADDRESS);
-                socket = device.createInsecureRfcommSocketToServiceRecord(java.util.UUID.fromString(UUID));
+                socket = device.createRfcommSocketToServiceRecord(java.util.UUID.fromString(UUID));
                 socket.connect();
                 out = socket.getOutputStream();
                 in = socket.getInputStream();
@@ -149,6 +153,8 @@ public class BluetoothConnector implements Constants {
         }
 
         private void onDisconnect() {
+            Log.i(TAG, "Disconnect from bluetooth dongle");
+
             if (receiver != null) context.unregisterReceiver(receiver);
 
             Util.close(in);
@@ -157,8 +163,9 @@ public class BluetoothConnector implements Constants {
         }
 
         private void onCommand(int servoId, int angle) {
+            String message = String.format("S%02dA%03d\n", servoId, angle);
+            Log.i(TAG, "Send command: " + message);
             try {
-                String message = String.format("S%02dA%03d\n", servoId, angle);
                 out.write(message.getBytes());
                 out.flush();
                 int response = in.read();
