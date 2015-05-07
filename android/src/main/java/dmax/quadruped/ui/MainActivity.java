@@ -5,9 +5,9 @@ import android.os.Bundle;
 import android.widget.SeekBar;
 
 import dmax.quadruped.R;
-import dmax.quadruped.bluetooth.BluetoothCallback;
-import dmax.quadruped.bluetooth.BluetoothConnector;
-import dmax.quadruped.bluetooth.BluetoothMessage;
+import dmax.quadruped.connection.bluetooth.BluetoothCallback;
+import dmax.quadruped.connection.bluetooth.BluetoothConnector;
+import dmax.quadruped.connection.bluetooth.BluetoothMessage;
 
 public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeListener {
 

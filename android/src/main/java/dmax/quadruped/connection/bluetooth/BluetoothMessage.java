@@ -1,4 +1,4 @@
-package dmax.quadruped.bluetooth;
+package dmax.quadruped.connection.bluetooth;
 
 /**
  * Created by Maxim Dybarsky | maxim.dybarskyy@gmail.com
