@@ -5,39 +5,17 @@ import android.os.Bundle;
 import android.widget.SeekBar;
 
 import dmax.quadruped.R;
-import dmax.quadruped.connection.bluetooth.BluetoothCallback;
-import dmax.quadruped.connection.bluetooth.BluetoothConnector;
-import dmax.quadruped.connection.bluetooth.BluetoothMessage;
+import dmax.quadruped.connection.ConnectorServiceClient;
 
-public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeListener {
+public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeListener, ConnectorServiceClient.Callback {
 
-    private BluetoothConnector bluetooth;
-    private BluetoothCallback callback = new BluetoothCallback() {
-        @Override
-        public void onConnected() {
-            enableSeekBar(R.id.servo1, true);
-            enableSeekBar(R.id.servo2, true);
-            enableSeekBar(R.id.servo3, true);
-        }
-
-        @Override
-        public void onFailed() {
-            enableSeekBar(R.id.servo1, false);
-            enableSeekBar(R.id.servo2, false);
-            enableSeekBar(R.id.servo3, false);
-        }
-
-        @Override
-        public void onResponse(Response response) {
-
-        }
-    };
+    private ConnectorServiceClient connector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        bluetooth = new BluetoothConnector(this, callback);
+        connector = new ConnectorServiceClient();
 
         setContentView(R.layout.main);
 
@@ -47,21 +25,15 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        bluetooth.connect();
+    protected void onStart() {
+        super.onStart();
+        connector.bind(this, this);
     }
 
     @Override
-    protected void onPause() {
-        bluetooth.disconnect();
-        super.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        bluetooth.quit();
-        super.onDestroy();
+    protected void onStop() {
+        connector.unbind(this);
+        super.onStop();
     }
 
     private void initSeekBar(int id) {
@@ -84,8 +56,7 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
             case R.id.servo2: id = 1; break;
             case R.id.servo3: id = 2; break;
         }
-        BluetoothMessage message = new BluetoothMessage(id, value);
-        bluetooth.send(message);
+        connector.sendCommand(id, value);
     }
 
     @Override
@@ -93,4 +64,20 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
 
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {}
+
+    @Override
+    public void onSent(boolean result) {
+        if (!result) {
+            enableSeekBar(R.id.servo1, false);
+            enableSeekBar(R.id.servo2, false);
+            enableSeekBar(R.id.servo3, false);
+        }
+    }
+
+    @Override
+    public void onReady() {
+        enableSeekBar(R.id.servo1, true);
+        enableSeekBar(R.id.servo2, true);
+        enableSeekBar(R.id.servo3, true);
+    }
 }
