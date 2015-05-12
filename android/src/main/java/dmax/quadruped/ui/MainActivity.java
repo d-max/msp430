@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.widget.SeekBar;
 
+import dmax.quadruped.Logger;
 import dmax.quadruped.R;
 import dmax.quadruped.connection.ConnectorServiceClient;
 
 public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeListener, ConnectorServiceClient.Callback {
 
+    private Logger log = new Logger("QuadrupedActivity");
     private ConnectorServiceClient connector;
 
     @Override
@@ -27,11 +29,13 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
     @Override
     protected void onStart() {
         super.onStart();
+        log.d("bind service");
         connector.bind(this, this);
     }
 
     @Override
     protected void onStop() {
+        log.d("unbind service");
         connector.unbind(this);
         super.onStop();
     }
@@ -56,6 +60,7 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
             case R.id.servo2: id = 1; break;
             case R.id.servo3: id = 2; break;
         }
+        log.d("send servo command: %d %d", id, value);
         connector.sendCommand(id, value);
     }
 
@@ -67,6 +72,7 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
 
     @Override
     public void onSent(boolean result) {
+        log.d("sending result: %b", result);
         if (!result) {
             enableSeekBar(R.id.servo1, false);
             enableSeekBar(R.id.servo2, false);
@@ -76,6 +82,7 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
 
     @Override
     public void onReady() {
+        log.d("binded");
         enableSeekBar(R.id.servo1, true);
         enableSeekBar(R.id.servo2, true);
         enableSeekBar(R.id.servo3, true);
