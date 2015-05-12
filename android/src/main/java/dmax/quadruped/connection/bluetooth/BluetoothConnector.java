@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.Semaphore;
 
+import dmax.quadruped.Logger;
 import dmax.quadruped.Util;
 import dmax.quadruped.connection.Connector;
 
@@ -24,7 +25,8 @@ import static android.bluetooth.BluetoothAdapter.*;
  */
 public class BluetoothConnector implements Connector, Constants {
 
-    private Semaphore bluetoothEnableLock = new Semaphore(0);
+    private Logger log = new Logger("BluetoothConnector");
+    private Semaphore bluetoothEnableLock;
     private BroadcastReceiver receiver;
     private Context context;
     private BluetoothAdapter adapter;
@@ -34,31 +36,53 @@ public class BluetoothConnector implements Connector, Constants {
 
     public BluetoothConnector(Context context) {
         this.context = context;
-    }
+        this.adapter = BluetoothAdapter.getDefaultAdapter();
 
-    public void connect() {
-        if (adapter == null) adapter = BluetoothAdapter.getDefaultAdapter();
-
-        if (adapter.isEnabled()) {
-            onReady();
-        } else {
+        if (!adapter.isEnabled()) {
+            log.d("enable bluetooth");
+            bluetoothEnableLock = new Semaphore(0);
             receiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-                    if (intent.getIntExtra(EXTRA_STATE, -1) == STATE_ON) onReady();
+                    if (intent.getIntExtra(EXTRA_STATE, -1) == STATE_ON) {
+                        log.d("enabled");
+                        bluetoothEnableLock.release();
+                    }
                 }
             };
             context.registerReceiver(receiver, new IntentFilter(ACTION_STATE_CHANGED));
             adapter.enable();
         }
+    }
+
+    public void connect() {
+        log.d("connect");
         try {
-            bluetoothEnableLock.acquire();
+            if (bluetoothEnableLock != null) {
+                log.d("wait for bluetooth");
+                bluetoothEnableLock.acquire();
+            }
+            BluetoothDevice device = adapter.getRemoteDevice(ADDRESS);
+            socket = device.createRfcommSocketToServiceRecord(java.util.UUID.fromString(UUID));
+            socket.connect();
+            out = socket.getOutputStream();
+            in = socket.getInputStream();
         } catch (InterruptedException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Util.close(in);
+            Util.close(out);
+            Util.close(socket);
         }
     }
 
     public boolean send(int servoId, int angle) {
+        log.d("send: %d %d", servoId, angle);
+        if (!socket.isConnected()) {
+            log.e("connection error");
+            return false;
+        }
         int response = RESPONSE_FAILED;
         try {
             String message = String.format(MESSAGE_TEMPLATE, servoId, angle);
@@ -74,24 +98,8 @@ public class BluetoothConnector implements Connector, Constants {
         return response == RESPONSE_OK;
     }
 
-    private void onReady() {
-        try {
-            BluetoothDevice device = adapter.getRemoteDevice(ADDRESS);
-            socket = device.createRfcommSocketToServiceRecord(java.util.UUID.fromString(UUID));
-            socket.connect();
-            out = socket.getOutputStream();
-            in = socket.getInputStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Util.close(in);
-            Util.close(out);
-            Util.close(socket);
-        } finally {
-            bluetoothEnableLock.release();
-        }
-    }
-
     public void disconnect() {
+        log.d("disconnect");
         if (receiver != null) context.unregisterReceiver(receiver);
 
         Util.close(in);

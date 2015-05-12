@@ -47,6 +47,7 @@ public class ConnectorServiceClient implements ServiceConnection {
     public void sendCommand(int servoId, int angle) {
         try {
             Message message = Message.obtain();
+            message.what = ConnectorService.COMMAND;
             message.arg1 = servoId;
             message.arg2 = angle;
             message.replyTo = responseMessenger;
