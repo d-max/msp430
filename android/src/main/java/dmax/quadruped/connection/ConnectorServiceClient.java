@@ -36,7 +36,7 @@ public class ConnectorServiceClient implements ServiceConnection {
                 ConnectorServiceClient.this.callback.onSent((Boolean) msg.obj);
             }
         });
-        Intent intent = new Intent(context, ConnectorService.class);
+        Intent intent = new Intent(context, ConnectorService2.class);
         context.bindService(intent, this, Service.BIND_AUTO_CREATE);
     }
 
@@ -47,7 +47,7 @@ public class ConnectorServiceClient implements ServiceConnection {
     public void sendCommand(int servoId, int angle) {
         try {
             Message message = Message.obtain();
-            message.what = ConnectorService.COMMAND;
+            message.what = Constants.COMMAND;
             message.arg1 = servoId;
             message.arg2 = angle;
             message.replyTo = responseMessenger;

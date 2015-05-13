@@ -19,6 +19,7 @@
         </activity>
 
         <service android:name=".connection.ConnectorService"/>
+        <service android:name=".connection.ConnectorService2"/>
 
     </application>
 

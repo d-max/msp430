@@ -16,6 +16,7 @@ import java.util.concurrent.Semaphore;
 import dmax.quadruped.Logger;
 import dmax.quadruped.Util;
 import dmax.quadruped.connection.Connector;
+import dmax.quadruped.connection.Constants;
 
 import static android.bluetooth.BluetoothAdapter.*;
 
@@ -24,6 +25,10 @@ import static android.bluetooth.BluetoothAdapter.*;
  * on 16.04.15 at 16:11
  */
 public class BluetoothConnector implements Connector, Constants {
+
+    private static final String ADDRESS = "00:12:06:21:88:70";
+    private static final String UUID = "00001101-0000-1000-8000-00805F9B34FB";
+    private static final String MESSAGE_TEMPLATE = "S%02dA%03d\n";
 
     private Logger log = new Logger("BluetoothConnector");
     private Semaphore bluetoothEnableLock;

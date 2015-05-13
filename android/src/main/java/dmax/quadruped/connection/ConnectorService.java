@@ -24,9 +24,8 @@ public class ConnectorService extends Service {
 
     private Logger log = new Logger("ConnectorService");
     private Messenger localMessenger;
-    private Handler commandProcessor;
     private ExecutorService worker;
-    private Connector connector;
+    private volatile Connector connector;
 
     @Override
     public void onCreate() {
@@ -34,8 +33,7 @@ public class ConnectorService extends Service {
         super.onCreate();
 
         connector = new BluetoothConnector(this);
-        commandProcessor = new CommandProcessor();
-        localMessenger = new Messenger(commandProcessor);
+        localMessenger = new Messenger(new CommandProcessor());
 
         worker = Executors.newSingleThreadExecutor();
         worker.execute(new Runnable() {

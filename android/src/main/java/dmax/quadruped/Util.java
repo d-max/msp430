@@ -1,6 +1,9 @@
 package dmax.quadruped;
 
 import java.io.Closeable;
+import java.lang.reflect.Field;
+
+import dmax.quadruped.connection.Constants;
 
 /**
  * Created by Maxim Dybarsky | maxim.dybarskyy@gmail.com
@@ -16,5 +19,16 @@ public class Util {
                 // silent
             }
         }
+    }
+
+    public static String findConstantName(int constant) {
+        try {
+            for (Field f : Constants.class.getDeclaredFields())
+                if (f.getInt(null) == constant)
+                    return f.getName();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
