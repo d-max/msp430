@@ -30,8 +30,8 @@ public class BluetoothConnector implements Connector, Constants {
     private static final String UUID = "00001101-0000-1000-8000-00805F9B34FB";
     private static final String MESSAGE_TEMPLATE = "S%02dA%03d\n";
 
-    private Logger log = new Logger("BluetoothConnector");
-    private Semaphore bluetoothEnableLock;
+    private volatile Logger log = new Logger("BluetoothConnector");
+    private volatile Semaphore bluetoothEnableLock;
     private BroadcastReceiver receiver;
     private Context context;
     private BluetoothAdapter adapter;
