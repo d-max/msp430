@@ -2,46 +2,39 @@ package dmax.quadruped.connection;
 
 import android.app.Service;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.Message;
-import android.os.Messenger;
-import android.os.RemoteException;
+import android.os.*;
+import android.os.Process;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import dmax.quadruped.Logger;
+import dmax.quadruped.Util;
 import dmax.quadruped.connection.bluetooth.BluetoothConnector;
 
 /**
  * Created by Maksym Dybarskyi | maxim.dybarskyy@gmail.com
  * on 07.05.15 at 17:11
  */
-public class ConnectorService extends Service {
-
-    static final int COMMAND = 0x45;
+public class ConnectorService extends Service implements Constants {
 
     private Logger log = new Logger("ConnectorService");
     private Messenger localMessenger;
-    private ExecutorService worker;
-    private volatile Connector connector;
+    private HandlerThread worker;
 
     @Override
     public void onCreate() {
         log.d("start");
         super.onCreate();
 
-        connector = new BluetoothConnector(this);
-        localMessenger = new Messenger(new CommandProcessor());
+        worker = new HandlerThread("ConnectorServiceThread", Process.THREAD_PRIORITY_BACKGROUND);
+        worker.start();
 
-        worker = Executors.newSingleThreadExecutor();
-        worker.execute(new Runnable() {
-            @Override
-            public void run() {
-                connector.connect();
-            }
-        });
+        Connector connector = new BluetoothConnector(this);
+        Handler commandProcessor = new Handler(worker.getLooper(), new CommandProcessor(connector, log));
+        localMessenger = new Messenger(commandProcessor);
+
+        sendCommand(CONNECT);
     }
 
     @Override
@@ -53,37 +46,54 @@ public class ConnectorService extends Service {
     @Override
     public void onDestroy() {
         log.d("stop");
-        worker.execute(new Runnable() {
-            @Override
-            public void run() {
-                connector.disconnect();
-            }
-        });
-        worker.shutdown();
+        sendCommand(DISCONNECT);
+        worker.quitSafely();
+    }
+
+    private void sendCommand(int what) {
+        log.d("send command: %s", Util.findConstantName(what));
+        try {
+            Message message = Message.obtain();
+            message.what = what;
+            localMessenger.send(message);
+        } catch (RemoteException e) {
+            log.e("Thread is dead");
+            e.printStackTrace();
+        }
     }
 
     //~
 
-    private class CommandProcessor extends Handler {
+    private static class CommandProcessor implements Handler.Callback {
+
+        private Connector connector;
+        private Logger log;
+
+        public CommandProcessor(Connector connector, Logger log) {
+            this.connector = connector;
+            this.log = log;
+        }
 
         @Override
-        public void handleMessage(Message msg) {
-            if (msg.what != COMMAND) {
-                log.e("wrong message");
-                return;
-            }
-            final Messenger replyTo = msg.replyTo;
-            final int servoId = msg.arg1;
-            final int servoAngle = msg.arg2;
-
-            log.d("handle command: %d %d", servoId, servoAngle);
-            worker.execute(new Runnable() {
-                @Override
-                public void run() {
+        public boolean handleMessage(Message msg) {
+            switch (msg.what) {
+                case CONNECT:
+                    connector.connect();
+                    return true;
+                case DISCONNECT:
+                    connector.disconnect();
+                    return true;
+                case COMMAND:
+                    Messenger replyTo = msg.replyTo;
+                    int servoId = msg.arg1;
+                    int servoAngle = msg.arg2;
                     boolean result = connector.send(servoId, servoAngle);
                     sendResult(result, replyTo);
-                }
-            });
+                    return true;
+                default:
+                    log.e("wrong message");
+                    return false;
+            }
         }
 
         private void sendResult(boolean result, Messenger replyTo) {
@@ -93,6 +103,7 @@ public class ConnectorService extends Service {
                 reply.obj = result;
                 replyTo.send(reply);
             } catch (RemoteException e) {
+                log.e("ReplyTo is dead");
                 e.printStackTrace();
             }
         }

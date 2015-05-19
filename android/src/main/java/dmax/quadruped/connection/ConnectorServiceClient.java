@@ -36,7 +36,7 @@ public class ConnectorServiceClient implements ServiceConnection {
                 ConnectorServiceClient.this.callback.onSent((Boolean) msg.obj);
             }
         });
-        Intent intent = new Intent(context, ConnectorService2.class);
+        Intent intent = new Intent(context, ConnectorService.class);
         context.bindService(intent, this, Service.BIND_AUTO_CREATE);
     }
 

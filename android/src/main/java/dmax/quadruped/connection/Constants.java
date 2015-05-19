@@ -6,10 +6,10 @@ package dmax.quadruped.connection;
  */
 public interface Constants {
 
-    int COMMAND = 0x1;
-    int CONNECT = 0x2;
-    int DISCONNECT = 0x3;
+    int COMMAND = 0x11;
+    int CONNECT = 0x12;
+    int DISCONNECT = 0x13;
 
-    int RESPONSE_OK = 0x04;
-    int RESPONSE_FAILED = 0x05;
+    int RESPONSE_OK = 0x01;
+    int RESPONSE_FAILED = 0x02;
 }
