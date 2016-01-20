@@ -24,7 +24,7 @@ public class Util {
     public static String findConstantName(int constant) {
         try {
             for (Field f : ConnectorService.class.getDeclaredFields())
-                if (f.getInt(null) == constant)
+                if (f.getDeclaringClass().equals(Integer.TYPE) && f.getInt(null) == constant)
                     return f.getName();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
