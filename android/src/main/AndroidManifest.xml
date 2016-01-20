@@ -10,7 +10,7 @@
         <activity
             android:name=".ui.MainActivity"
             android:theme="@style/Theme.Large"
-            android:label="BT"
+            android:label="@string/launcherName"
             android:icon="@mipmap/ic_launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
