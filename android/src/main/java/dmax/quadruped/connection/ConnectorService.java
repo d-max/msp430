@@ -5,9 +5,6 @@ import android.content.Intent;
 import android.os.*;
 import android.os.Process;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import dmax.quadruped.Logger;
 import dmax.quadruped.Util;
 import dmax.quadruped.connection.bluetooth.BluetoothConnector;
@@ -16,9 +13,14 @@ import dmax.quadruped.connection.bluetooth.BluetoothConnector;
  * Created by Maksym Dybarskyi | maxim.dybarskyy@gmail.com
  * on 07.05.15 at 17:11
  */
-public class ConnectorService extends Service implements Constants {
+public class ConnectorService extends Service {
 
-    private Logger log = new Logger("ConnectorService");
+    public static final int COMMAND = 0x11;
+    public static final int CONNECT = 0x12;
+    public static final int DISCONNECT = 0x13;
+
+    private static Logger log = new Logger("ConnectorService");
+
     private Messenger localMessenger;
     private HandlerThread worker;
 
@@ -31,7 +33,8 @@ public class ConnectorService extends Service implements Constants {
         worker.start();
 
         Connector connector = new BluetoothConnector(this);
-        Handler commandProcessor = new Handler(worker.getLooper(), new CommandProcessor(connector, log));
+        CommandProcessor processor = new CommandProcessor(connector);
+        Handler commandProcessor = new Handler(worker.getLooper(), processor);
         localMessenger = new Messenger(commandProcessor);
 
         sendCommand(CONNECT);
@@ -67,11 +70,9 @@ public class ConnectorService extends Service implements Constants {
     private static class CommandProcessor implements Handler.Callback {
 
         private Connector connector;
-        private Logger log;
 
-        public CommandProcessor(Connector connector, Logger log) {
+        public CommandProcessor(Connector connector) {
             this.connector = connector;
-            this.log = log;
         }
 
         @Override
@@ -85,8 +86,8 @@ public class ConnectorService extends Service implements Constants {
                     return true;
                 case COMMAND:
                     Messenger replyTo = msg.replyTo;
-                    int servoId = msg.arg1;
-                    int servoAngle = msg.arg2;
+                    int servoId = MessageHelper.getServoId(msg);
+                    int servoAngle = MessageHelper.getAngle(msg);
                     boolean result = connector.send(servoId, servoAngle);
                     sendResult(result, replyTo);
                     return true;
@@ -99,9 +100,8 @@ public class ConnectorService extends Service implements Constants {
         private void sendResult(boolean result, Messenger replyTo) {
             log.d("reply message");
             try {
-                Message reply = Message.obtain();
-                reply.obj = result;
-                replyTo.send(reply);
+                Message msg = MessageHelper.createResultMessage(result);
+                replyTo.send(msg);
             } catch (RemoteException e) {
                 log.e("ReplyTo is dead");
                 e.printStackTrace();

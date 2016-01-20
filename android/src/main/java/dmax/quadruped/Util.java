@@ -3,7 +3,7 @@ package dmax.quadruped;
 import java.io.Closeable;
 import java.lang.reflect.Field;
 
-import dmax.quadruped.connection.Constants;
+import dmax.quadruped.connection.ConnectorService;
 
 /**
  * Created by Maxim Dybarsky | maxim.dybarskyy@gmail.com
@@ -11,7 +11,7 @@ import dmax.quadruped.connection.Constants;
  */
 public class Util {
 
-    public static void close(Closeable closeable) {
+    public static void closeSilently(Closeable closeable) {
         if (closeable != null) {
             try {
                 closeable.close();
@@ -23,7 +23,7 @@ public class Util {
 
     public static String findConstantName(int constant) {
         try {
-            for (Field f : Constants.class.getDeclaredFields())
+            for (Field f : ConnectorService.class.getDeclaredFields())
                 if (f.getInt(null) == constant)
                     return f.getName();
         } catch (IllegalAccessException e) {

@@ -28,28 +28,20 @@ public class ConnectorServiceClient implements ServiceConnection {
     private Messenger requestMessenger;
     private Messenger responseMessenger;
 
-    public void bind(Context context, Callback callback) {
+    public void bindToService(Context context, Callback callback) {
         this.callback = callback;
-        this.responseMessenger = new Messenger(new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                ConnectorServiceClient.this.callback.onSent((Boolean) msg.obj);
-            }
-        });
+        this.responseMessenger = new Messenger(new ResponseHandler(callback));
         Intent intent = new Intent(context, ConnectorService.class);
         context.bindService(intent, this, Service.BIND_AUTO_CREATE);
     }
 
-    public void unbind(Context context) {
+    public void unbindFromService(Context context) {
         context.unbindService(this);
     }
 
     public void sendCommand(int servoId, int angle) {
         try {
-            Message message = Message.obtain();
-            message.what = Constants.COMMAND;
-            message.arg1 = servoId;
-            message.arg2 = angle;
+            Message message = MessageHelper.createCommandMessage(servoId, angle);
             message.replyTo = responseMessenger;
             requestMessenger.send(message);
         } catch (RemoteException e) {
@@ -66,5 +58,20 @@ public class ConnectorServiceClient implements ServiceConnection {
     @Override
     public void onServiceDisconnected(ComponentName name) {
         requestMessenger = null;
+    }
+
+    private static class ResponseHandler extends Handler {
+
+        private ConnectorServiceClient.Callback callback;
+
+        public ResponseHandler(ConnectorServiceClient.Callback callback) {
+            this.callback = callback;
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            boolean result = MessageHelper.getResult(msg);
+            this.callback.onSent(result);
+        }
     }
 }

@@ -16,7 +16,6 @@ import java.util.concurrent.Semaphore;
 import dmax.quadruped.Logger;
 import dmax.quadruped.Util;
 import dmax.quadruped.connection.Connector;
-import dmax.quadruped.connection.Constants;
 
 import static android.bluetooth.BluetoothAdapter.*;
 
@@ -24,13 +23,16 @@ import static android.bluetooth.BluetoothAdapter.*;
  * Created by Maxim Dybarsky | maxim.dybarskyy@gmail.com
  * on 16.04.15 at 16:11
  */
-public class BluetoothConnector implements Connector, Constants {
+public class BluetoothConnector implements Connector {
 
+    private static final int RESPONSE_OK = 0x01;
+    private static final int RESPONSE_FAILED = 0x02;
     private static final String ADDRESS = "00:12:06:21:88:70";
     private static final String UUID = "00001101-0000-1000-8000-00805F9B34FB";
     private static final String MESSAGE_TEMPLATE = "S%02dA%03d\n";
 
-    private volatile Logger log = new Logger("BluetoothConnector");
+    private static Logger log = new Logger("BluetoothConnector");
+
     private volatile Semaphore bluetoothEnableLock;
     private BroadcastReceiver receiver;
     private Context context;
@@ -46,15 +48,7 @@ public class BluetoothConnector implements Connector, Constants {
         if (!adapter.isEnabled()) {
             log.d("enable bluetooth");
             bluetoothEnableLock = new Semaphore(0);
-            receiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    if (intent.getIntExtra(EXTRA_STATE, -1) == STATE_ON) {
-                        log.d("enabled");
-                        bluetoothEnableLock.release();
-                    }
-                }
-            };
+            receiver = new BluetoothStateReceiver(bluetoothEnableLock);
             context.registerReceiver(receiver, new IntentFilter(ACTION_STATE_CHANGED));
             adapter.enable();
         }
@@ -76,9 +70,9 @@ public class BluetoothConnector implements Connector, Constants {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-            Util.close(in);
-            Util.close(out);
-            Util.close(socket);
+            Util.closeSilently(in);
+            Util.closeSilently(out);
+            Util.closeSilently(socket);
         }
     }
 
@@ -96,9 +90,9 @@ public class BluetoothConnector implements Connector, Constants {
             response = in.read();
         } catch (IOException ex) {
             ex.printStackTrace();
-            Util.close(in);
-            Util.close(out);
-            Util.close(socket);
+            Util.closeSilently(in);
+            Util.closeSilently(out);
+            Util.closeSilently(socket);
         }
         return response == RESPONSE_OK;
     }
@@ -107,8 +101,27 @@ public class BluetoothConnector implements Connector, Constants {
         log.d("disconnect");
         if (receiver != null) context.unregisterReceiver(receiver);
 
-        Util.close(in);
-        Util.close(out);
-        Util.close(socket);
+        Util.closeSilently(in);
+        Util.closeSilently(out);
+        Util.closeSilently(socket);
     }
+
+    //~
+
+    private static class BluetoothStateReceiver extends BroadcastReceiver {
+
+        private volatile Semaphore lock;
+
+        public BluetoothStateReceiver(Semaphore lock) {
+            this.lock = lock;
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getIntExtra(EXTRA_STATE, -1) == STATE_ON) {
+                log.d("enabled");
+                lock.release();
+            }
+        }
+    };
 }

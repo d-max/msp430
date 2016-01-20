@@ -30,13 +30,13 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
     protected void onStart() {
         super.onStart();
         log.d("bind service");
-        connector.bind(this, this);
+        connector.bindToService(this, this);
     }
 
     @Override
     protected void onStop() {
         log.d("unbind service");
-        connector.unbind(this);
+        connector.unbindFromService(this);
         super.onStop();
     }
 
