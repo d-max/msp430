@@ -18,8 +18,9 @@ import android.os.RemoteException;
 public class ConnectorServiceClient implements ServiceConnection {
 
     public interface Callback {
-        void onReady();
+        void onConnected();
         void onSent(boolean result);
+        void onReady();
     }
 
     //~
@@ -31,12 +32,13 @@ public class ConnectorServiceClient implements ServiceConnection {
     public void bindToService(Context context, Callback callback) {
         this.callback = callback;
         this.responseMessenger = new Messenger(new ResponseHandler(callback));
-        Intent intent = new Intent(context, ConnectorService.class);
+        Intent intent = ConnectorService.createIntent(context, responseMessenger);
         context.bindService(intent, this, Service.BIND_AUTO_CREATE);
     }
 
     public void unbindFromService(Context context) {
         context.unbindService(this);
+        requestMessenger = null;
     }
 
     public void sendCommand(int servoId, int angle) {
@@ -52,12 +54,16 @@ public class ConnectorServiceClient implements ServiceConnection {
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         requestMessenger = new Messenger(service);
-        callback.onReady();
+        callback.onConnected();
     }
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
         requestMessenger = null;
+    }
+
+    public boolean isConnected() {
+        return requestMessenger != null;
     }
 
     private static class ResponseHandler extends Handler {
@@ -70,8 +76,11 @@ public class ConnectorServiceClient implements ServiceConnection {
 
         @Override
         public void handleMessage(Message msg) {
-            boolean result = MessageHelper.getResult(msg);
-            this.callback.onSent(result);
+            int type = msg.what;
+            switch (type) {
+                case ConnectorService.RESPONSE_READY:   callback.onReady(); break;
+                case ConnectorService.RESPONSE_SENT:    callback.onSent(MessageHelper.getResult(msg));    break;
+            }
         }
     }
 }

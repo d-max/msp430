@@ -16,9 +16,16 @@ public class MessageHelper {
         return message;
     }
 
-    public static Message createResultMessage(boolean result) {
+    public static Message createResultResponseMessage(boolean result) {
         Message message = Message.obtain();
+        message.what = ConnectorService.RESPONSE_SENT;
         message.obj = result;
+        return message;
+    }
+
+    public static Message createReadyResponseMessage() {
+        Message message = Message.obtain();
+        message.what = ConnectorService.RESPONSE_READY;
         return message;
     }
 

@@ -5,22 +5,44 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <SeekBar
-        android:id="@+id/servo1"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="30dp"/>
+        android:layout_marginTop="30dp">
+
+        <Button
+            android:id="@+id/connect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="60dp"
+            android:text="@string/connect"/>
+
+        <ImageView
+            android:id="@+id/status"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@id/connect"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="80dp"/>
+
+    </RelativeLayout>
 
     <SeekBar
-        android:id="@+id/servo2"
+        android:id="@+id/servo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="30dp"/>
+        android:layout_margin="40dp"/>
 
-    <SeekBar
-        android:id="@+id/servo3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="30dp"/>
+    <TextView
+        android:id="@+id/log"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:singleLine="false"
+        android:textSize="12sp"
+        android:layout_marginStart="40dp"
+        android:layout_marginBottom="40dp"
+        android:layout_marginEnd="40dp"/>
 
 </LinearLayout>

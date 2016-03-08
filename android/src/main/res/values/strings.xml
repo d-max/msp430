@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="launcherName">Quadruped</string>
+    <string name="connect">connect</string>
+    <string name="disconnect">disconnect</string>
 </resources>
