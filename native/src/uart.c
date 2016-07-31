@@ -16,7 +16,7 @@
 #define BT_RX BIT2
 #define BT_UART_SPEED 0xFF
 #define BT_UART_CORRECTION 0x04
-#define CMD_BUFFER_SIZE 8
+#define CMD_BUFFER_SIZE 2
 #define BT_RESPONSE_OK 1
 #define BT_RESPONSE_FAILED 2
 
@@ -40,88 +40,38 @@ void configure_uart() {
 }
 
 int head = 0;
-char rx_buffer[CMD_BUFFER_SIZE];
+unsigned char rx_buffer[CMD_BUFFER_SIZE];
 
 void message_ready() {
-    int servo_id, angle, *current;
-    int begin, end, cursor = 0;
-    while (cursor < CMD_BUFFER_SIZE) {
-        switch (rx_buffer[cursor++]) {
-            case 'S':
-                // next chars are servo id
-                current = &servo_id;
-                begin = cursor;
-                end = cursor;
-                break;
-            case 'A':
-                // end of servo id - convert to int
-                *current = str_to_int(rx_buffer, begin, end);
-                // next chars are angle value
-                current = &angle;
-                begin = cursor;
-                end = cursor;
-                break;
-            case '\n':
-                // end of angle value - convert to int
-                *current = str_to_int(rx_buffer, begin, end);
-                break;
-            default:
-                end++;
-                break;
-        }
-    }
+    unsigned char servo_id = rx_buffer[0];
+    unsigned char angle = rx_buffer[1];
+
     if (check_data_range(servo_id, angle)) {
-        // update servo configuration
+        // apply command
         set_servo_angle(servo_id, angle);
         // send response
         UCA0TXBUF = BT_RESPONSE_OK;
     } else {
         UCA0TXBUF = BT_RESPONSE_FAILED;
     }
+
+    UCA0TXBUF = 1;
     // enable TX interruption
     UC0IE |= UCA0TXIE;
 }
 
-/* converts part of string into integer. range is from begin(inclusive) to end(exclusive) */
-int str_to_int(char *string, int begin, int end) {
-    int result = 0;
-    int count = 0;
-    char *p;
-    while (begin <= --end) {
-        p = &string[end];
-        result += (*p - '0') * pow_decimal(count++);
-    }
-    return result;
-}
-
-/* returns 10 ^ degree */
-int pow_decimal(int degree) {
-    int result = 1;
-    int i = 0;
-    while (i++ < degree) {
-        result = result * 10;
-    }
-    return result;
-}
-
-
-void uart_data_received(char data) {
+void uart_data_received() {
     // collect received byte into buffer
+    unsigned char data = UCA0RXBUF;
     rx_buffer[head++] = data;
     // end of command message
-    if (data == '\n') {
+    if (head == CMD_BUFFER_SIZE) {
         message_ready();
         head = 0;
     }
 }
 
-char uart_data_tosend() {
-
+void uart_data_send() {
+    // disable TX interruptions
+    UC0IE &= ~UCA0TXIE;
 }
-
-
-// #pragma vector=USCIAB0TX_VECTOR
-// __interrupt void USCI0TX_ISR(void) {
-//     // disable TX interruptions
-//     UC0IE &= ~UCA0TXIE;
-// }

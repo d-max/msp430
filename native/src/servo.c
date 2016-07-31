@@ -54,12 +54,12 @@ void configure_servos() {
     _BIS_SR(GIE);
 }
 
-void set_servo_angle(char servo_id, char angle) {
+void set_servo_angle(unsigned char servo_id, unsigned char angle) {
     int time = angle * ONE_DEGREE_TIME + PWM_MIN_TIME;
     servos[servo_id].pwm_time = time;
 }
 
-int check_data_range(char servo_id, char angle) {
+int check_data_range(unsigned char servo_id, unsigned char angle) {
     if (servo_id < 0 || servo_id >= SRV_COUNT) return 0;
     if (angle < 0 || angle > 180) return 0;
     return 1;

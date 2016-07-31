@@ -28,7 +28,11 @@ int main(void) {
 
 
 #pragma vector = USCIAB0RX_VECTOR
-__interrupt void UART_RECEIVE(void) {
-    char data = UCA0RXBUF;
-    uart_data_received(data);
+__interrupt void usci_rx_isr(void) {
+    uart_data_received();
+}
+
+#pragma vector = USCIAB0TX_VECTOR
+__interrupt void usci_tx_isr(void) {
+    uart_data_send();
 }

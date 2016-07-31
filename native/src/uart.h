@@ -1,5 +1,5 @@
 void configure_uart();
 
-void uart_data_received(char data);
+void uart_data_received();
 
-char uart_data_tosend();
+void uart_data_send();
