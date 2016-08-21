@@ -19,4 +19,3 @@
 #define BT_RESPONSE_FAILED 2
 
 void _configure_bluetooth();
-

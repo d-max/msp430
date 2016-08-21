@@ -2,14 +2,10 @@
 #include "servo.h"
 #include "bluetooth.h"
 
-//~
-
 void _configure();
 
-//~
-
 int main(void) {
-	// initial mcu config
+    // initial mcu config
     _configure();
     
     // config periphery
@@ -21,7 +17,7 @@ int main(void) {
 }
 
 void _configure() {
-	// turn off watchdog
+    // turn off watchdog
     WDTCTL = WDTPW + WDTHOLD;
     
     // use frequency 12 MHz
