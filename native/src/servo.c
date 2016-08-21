@@ -1,23 +1,45 @@
+/*
+ frequency = 12 Mhz
+ divider = 4
+ clock rate = 3 000 000
+
+ pwm frequency = 50 Hz (1/50 sec)
+ pwm period = 3 000 000 / 50 = 60 000
+ timer CCR0 = pwm period / servo count = 60 000 / 2 = 30 000
+*/
+
 #include <msp430g2553.h>
 #include "servo.h"
 
-void _configure_servos() {
+#define SRV_COUNT 1
+#define PWM_MAX_TIME 7200           // 2400 microsec * 3
+#define PWM_MIN_TIME 1500           // 500 microsec * 3
+#define PWM_PERIOD_TIME_A 60000     // 1 servo
+#define ONE_DEGREE_TIME 32          // (7200 - 1500) / 180
+
+enum out {
+    PORT1,
+    PORT2
+};
+
+struct servo {
+    enum out port;
+    int bit;
+    int pwm_time;
+};
+
+struct servo servos[SRV_COUNT];
+
+int cursor = 0;
+
+void configure_servos() {
     /* config servos */
     servos[0].port = PORT1;
     servos[0].bit = BIT4;
-    servos[0].pwm_time = 5000;
-
-    // servos[1].port = PORT1;
-    // servos[1].bit = BIT6;
-    // servos[1].pwm_time = PWM_MIN_TIME;
-    //
-    // servos[2].port = PORT2;
-    // servos[2].bit = BIT5;
-    // servos[2].pwm_time = PWM_MAX_TIME;
+    servos[0].pwm_time = 1000;
 
     // config pins
     P1DIR |= servos[0].bit;
-    // P2DIR |= servos[2].bit;
 
     /* config timer A */
     // sub-main clock + 4-divider + up mode + initialize
@@ -28,49 +50,31 @@ void _configure_servos() {
     TA0CCTL0 = CCIE;
     TA0CCTL1 = CCIE;
 
-    /* config timer B */
-    // // sub-main clock + 4-divider + up mode + initialize
-    // TA1CTL = TASSEL_2 + ID_2 + MC_1 + TACLR;
-    // // set time of pdm one iteration - 1/50 of second
-    // TA1CCR0 = PWM_PERIOD_TIME_B;
-    // // enable interruption caused by CCR0 and CCR1 values
-    // TA1CCTL0 = CCIE;
-    // TA1CCTL1 = CCIE;
-
     // enable interruptions
     _BIS_SR(GIE);
 }
 
-int srv_a_index = 0;
-int srv_b_index = SRV_GROUP;
-
-struct servo * next_servo(enum group grp) {
-    switch (grp) {
-        case GROUP_A:
-            srv_a_index++;
-            if (srv_a_index >= SRV_GROUP) srv_a_index = 0;
-            break;
-        case GROUP_B:
-            srv_b_index++;
-            if (srv_b_index >= SRV_COUNT) srv_b_index = SRV_GROUP;
-            break;
-    }
-    return current_servo(grp);
+void set_servo_angle(char servo_id, char angle) {
+    int time = angle * ONE_DEGREE_TIME + PWM_MIN_TIME;
+    servos[servo_id].pwm_time = time;
 }
 
-struct servo * current_servo(enum group grp) {
-    int *index;
-    switch (grp) {
-        case GROUP_A: index = &srv_a_index;
-            break;
-        case GROUP_B: index = &srv_b_index;
-            break;
-    }
-    return &servos[*index];
+int check_data_range(char servo_id, char angle) {
+    if (servo_id < 0 || servo_id >= SRV_COUNT) return 0;
+    if (angle < 0 || angle > 180) return 0;
+    return 1;
 }
 
-int angle_to_time(int angle) {
-    return angle * ONE_DEGREE_TIME + PWM_MIN_TIME;
+struct servo * current_servo() {
+    return &servos[cursor];
+}
+
+struct servo * next_servo() {
+    cursor++;
+    if (cursor >= SRV_COUNT)
+        cursor = 0;
+
+    return current_servo();
 }
 
 void servo_pin_on(struct servo *s) {
@@ -91,10 +95,9 @@ void servo_pin_off(struct servo *s) {
     }
 }
 
-
 #pragma vector = TIMER0_A0_VECTOR
 __interrupt void TA_CCR0_ISR(void) {
-    struct servo *s = next_servo(GROUP_A);
+    struct servo *s = next_servo();
     servo_pin_on(s);
     // set pwm duration time
     TA0CCR1 = (*s).pwm_time;
@@ -102,26 +105,9 @@ __interrupt void TA_CCR0_ISR(void) {
 
 #pragma vector = TIMER0_A1_VECTOR
 __interrupt void TA_CCR1_ISR(void) {
-    struct servo *s = current_servo(GROUP_A);
+    struct servo *s = current_servo();
     // set out pin bit to 0
     servo_pin_off(s);
     // reset interruption flag
     TA0CCTL1 &= ~CCIFG;
-}
-
-#pragma vector = TIMER1_A0_VECTOR
-__interrupt void TB_CCR0_ISR(void) {
-    struct servo *s = next_servo(GROUP_B);
-    servo_pin_on(s);
-    // set pwm duration time
-    TA1CCR1 = (*s).pwm_time;
-}
-
-#pragma vector = TIMER1_A1_VECTOR
-__interrupt void TB_CCR1_ISR(void) {
-    struct servo *s = current_servo(GROUP_B);
-    // set out pin bit to 0
-    servo_pin_off(s);
-    // reset interruption flag
-    TA1CCTL1 &= ~CCIFG;
 }

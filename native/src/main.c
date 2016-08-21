@@ -1,7 +1,6 @@
 #include <msp430g2553.h>
 #include "servo.h"
 #include "uart.h"
-#include "i2c.h"
 
 void configure() {
     // turn off watchdog
@@ -21,8 +20,7 @@ int main(void) {
 
     // config periphery
     configure_uart();
-    _configure_servos();
-//    _configure_i2c();
+    configure_servos();
 
     // low power mode
     _BIS_SR(LPM0_bits);
