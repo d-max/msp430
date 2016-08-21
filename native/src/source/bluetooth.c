@@ -66,6 +66,8 @@ void message_ready() {
     } else {
         UCA0TXBUF = BT_RESPONSE_FAILED;
     }
+    // enable TX interruption
+    UC0IE |= UCA0TXIE;
 }
 
 /* converts part of string into integer. range is from begin(inclusive) to end(exclusive) */
@@ -103,4 +105,10 @@ __interrupt void UART_RECEIVE(void) {
         message_ready();
         head = 0;
     }
+}
+
+#pragma vector=USCIAB0TX_VECTOR
+__interrupt void USCI0TX_ISR(void) {
+    // disable TX interruptions
+    UC0IE &= ~UCA0TXIE;
 }
