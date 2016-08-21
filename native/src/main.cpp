@@ -1,6 +1,9 @@
 /*
-UART: TX - P1.1, RX - P1.2
-I2C: SDA - P2.2, SCL - P2.1
+UART:
+    TX - P1.1, RX - P1.2
+I2C:
+    mode1: SDA - P2.2, SCL - P2.1
+    mode0: SDA - P1.7, SCL - P1.6
 */
 
 #include <Energia.h>
