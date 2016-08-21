@@ -25,7 +25,7 @@ int main(void) {
     configure_i2c();
 
     // for test purpose
-    i2c_reset();
+    i2c_init_pwm();
     i2c_start_transmition();
 
     // low power mode
@@ -34,7 +34,7 @@ int main(void) {
 
 #pragma vector = USCIAB0RX_VECTOR
 __interrupt void usci_rx_isr(void) {
-    uart_data_received();
+    // uart_data_received();
 }
 
 #pragma vector = USCIAB0TX_VECTOR
@@ -42,3 +42,11 @@ __interrupt void usci_tx_isr(void) {
     // uart_data_send();
     i2c_data_send();
 }
+
+// /* USCI_A0 UART interrupt? */
+// if (UC0IFG & UCA0TXIFG)
+//         uart_tx_isr();
+//
+// /* USCI_B0 I2C TX RX interrupt. */
+// if ((UCB0CTL0 & UCMODE_3) == UCMODE_3 && (UC0IFG & (UCB0TXIFG | UCB0RXIFG)) != 0)
+//         i2c_txrx_isr();

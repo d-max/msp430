@@ -9,50 +9,53 @@
 #include "i2c.h"
 #include "servo.h"
 
-#define BOARD_ADDRESS 0x40;
-#define PWM_OUT P1OUT
-#define PWM_SDA BIT6
-#define PWM_SCL BIT7
-#define PWM_DIVIDER 12
-#define PWM_BUFFER_SIZE 8
+#define I2C_OUT P1OUT
+#define I2C_SDA BIT6
+#define I2C_SCL BIT7
+#define I2C_DIVIDER 12
+#define I2C_BUFFER_SIZE 8
+#define PCA9685_ADDRESS 0x40
+#define PCA9685_MODE1 0x0
+#define PCA9685_MODE1 0x0
 
 void configure_i2c() {
     // use pins as USCI
-    P1SEL |= PWM_SCL + PWM_SDA;
-    P1SEL2 |= PWM_SCL + PWM_SDA;
+    P1SEL |= I2C_SCL + I2C_SDA;
+    P1SEL2 |= I2C_SCL + I2C_SDA;
     // init pins
-    PWM_OUT &= ~PWM_SCL;
-    PWM_OUT &= ~PWM_SDA;
+    I2C_OUT &= ~I2C_SCL;
+    I2C_OUT &= ~I2C_SDA;
     // reset
     UCB0CTL1 = UCSWRST;
     // I2C Master, synchronous mode
     UCB0CTL0 = UCMST + UCMODE_3 + UCSYNC;
     // Use SMCLK & SW reset
     UCB0CTL1 = UCSSEL_2 + UCSWRST;
-    UCB0BR0 = PWM_DIVIDER;
+    UCB0BR0 = I2C_DIVIDER;
     UCB0BR1 = 0;
-    UCB0I2CSA = BOARD_ADDRESS;
+    UCB0I2CSA = PCA9685_ADDRESS;
     // clear SW reset
     UCB0CTL1 &= ~UCSWRST;
     // enable RX/TX interruptions
     IE2 |= UCB0RXIE + UCB0TXIE;
 }
 
-int size = 5;
+int size = 8;
 int counter = 0;
 
-unsigned char tx_buffer[PWM_BUFFER_SIZE] = {
+unsigned char tx_buffer[] = {
     0x6, // LED0_ON_L
     0x1,
-//    0x7, // LED0_ON_H
+    0x7, // LED0_ON_H
     0x0,
-//    0x8, // LED0_OFF_L
+    0x8, // LED0_OFF_L
     0x1,
-//    0x9, // LED0_OFF_H
+    0x9, // LED0_OFF_H
     0xA
 };
 
-void i2c_reset() {
+void i2c_init_pwm() {
+    // send reset
 
 }
 
