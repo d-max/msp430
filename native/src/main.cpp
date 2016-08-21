@@ -1,12 +1,5 @@
-/*
-UART: TX - P1.1, RX - P1.2
-I2C: SDA - P2.2, SCL - P2.1
-*/
-
-// #include <Energia.h>
 #include <Arduino.h>
-#include <SoftwareSerial.h>
-// #include <msp430g2553.h>
+#include <HardwareSerial.h>
 #include "Servo.hpp"
 #include "PwmController.hpp"
 
@@ -20,7 +13,7 @@ char buffer[BT_COMMAND_LENGTH];
 
 void setup() {
     // initialize UART
-    Serial.begin(BT_BAUD_RATE);
+    Serial1.begin(BT_BAUD_RATE);
     // initialize pwm
     pwmController.init();
     pwmController.setFrequency(SERVO_PWM_FREQUENCY);
@@ -28,16 +21,16 @@ void setup() {
 
 void loop() {
 
-    if (Serial.available() > 0) {
+    if (Serial1.available() > 0) {
         // read command from UART
-        size_t read = Serial.readBytes(buffer, BT_COMMAND_LENGTH);
+        size_t read = Serial1.readBytes(buffer, BT_COMMAND_LENGTH);
 
         if (read == BT_COMMAND_LENGTH) {
             // set pwm value
             uint8_t angle = buffer[1];
             servo.setAngle(angle);
             // send response to UART
-            Serial.write(1);
+            Serial1.write(1);
         }
     }
 }
