@@ -1,6 +1,7 @@
-#include "Energia.h"
-#include "SoftwareSerial.h"
-#include "msp430g2553.h"
+#include <Energia.h>
+#include <SoftwareSerial.h>
+#include <Wire.h>
+#include <msp430g2553.h>
 
 #define BAUD_RATE 9600
 #define COMMAND_LENGTH 2
@@ -19,6 +20,9 @@ void setup() {
 
     // initialize UART
     Serial.begin(BAUD_RATE);
+    //
+    // Wire.begin();
+    // write8(0X00, 0x0);
 
 
     // initialize the digital pin as an output.
@@ -42,6 +46,10 @@ void loop() {
             Serial.write(1);
             // ser PWM
             analogWrite(LED, buffer[1]);
+
+        //
+        //     Wire.beginTransmission(0x40);
+        //     Wire.wri
         }
     }
 }
