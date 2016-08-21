@@ -1,6 +1,5 @@
-*.iml
-*.geany
-build/
-.gradle/
-.idea/
+nbproject/
+*~
 local.properties
+*.iml
+.idea/
