@@ -4,20 +4,20 @@
 void _configure_servos() {
     /* config servos */
     servos[0].port = PORT1;
-    servos[0].bit = BIT7;
-    servos[0].pwm_time = PWM_MIN_TIME;
+    servos[0].bit = BIT0;
+    servos[0].pwm_time = 20000;
 
-    servos[1].port = PORT1;
-    servos[1].bit = BIT6;
-    servos[1].pwm_time = PWM_MIN_TIME;
-
-    servos[2].port = PORT2;
-    servos[2].bit = BIT5;
-    servos[2].pwm_time = PWM_MAX_TIME;
+    // servos[1].port = PORT1;
+    // servos[1].bit = BIT6;
+    // servos[1].pwm_time = PWM_MIN_TIME;
+    //
+    // servos[2].port = PORT2;
+    // servos[2].bit = BIT5;
+    // servos[2].pwm_time = PWM_MAX_TIME;
 
     // config pins
-    P1DIR |= servos[0].bit + servos[1].bit;
-    P2DIR |= servos[2].bit;
+    P1DIR |= servos[0].bit;
+    // P2DIR |= servos[2].bit;
 
     /* config timer A */
     // sub-main clock + 4-divider + up mode + initialize
@@ -29,13 +29,13 @@ void _configure_servos() {
     TA0CCTL1 = CCIE;
 
     /* config timer B */
-    // sub-main clock + 4-divider + up mode + initialize
-    TA1CTL = TASSEL_2 + ID_2 + MC_1 + TACLR;
-    // set time of pdm one iteration - 1/50 of second
-    TA1CCR0 = PWM_PERIOD_TIME_B;
-    // enable interruption caused by CCR0 and CCR1 values
-    TA1CCTL0 = CCIE;
-    TA1CCTL1 = CCIE;
+    // // sub-main clock + 4-divider + up mode + initialize
+    // TA1CTL = TASSEL_2 + ID_2 + MC_1 + TACLR;
+    // // set time of pdm one iteration - 1/50 of second
+    // TA1CCR0 = PWM_PERIOD_TIME_B;
+    // // enable interruption caused by CCR0 and CCR1 values
+    // TA1CCTL0 = CCIE;
+    // TA1CCTL1 = CCIE;
 
     // enable interruptions
     _BIS_SR(GIE);

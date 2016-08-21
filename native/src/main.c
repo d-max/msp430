@@ -8,9 +8,9 @@ void _configure();
 int main(void) {
     // initial mcu config
     _configure();
-    
+
     // config periphery
-    //_configure_servos();
+    _configure_servos();
     _configure_bluetooth();
 //    _configure_i2c();
 
@@ -21,7 +21,7 @@ int main(void) {
 void _configure() {
     // turn off watchdog
     WDTCTL = WDTPW + WDTHOLD;
-    
+
     // use frequency 12 MHz
     BCSCTL1 = CALBC1_12MHZ;
     DCOCTL = CALDCO_12MHZ;
