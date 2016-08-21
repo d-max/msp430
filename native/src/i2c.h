@@ -1,17 +1,9 @@
-/*
- frequency = 12 Mhz
- i2c speed = 100kHz
+void configure_i2c();
 
- divider = 12
-*/
+void i2c_reset();
 
-#define BOARD_ADDRESS 0x40;
-#define PWM_OUT P1OUT
-#define PWM_SDA BIT6
-#define PWM_SCL BIT7
-#define PWM_DIVIDER 12
-#define PWM_BUFFER_SIZE 8
+void i2c_data_received();
 
-void _configure_i2c();
+void i2c_data_send();
 
-void transmit();
+void i2c_start_transmition();

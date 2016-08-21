@@ -40,11 +40,11 @@ void configure_uart() {
 }
 
 int head = 0;
-unsigned char rx_buffer[CMD_BUFFER_SIZE];
+unsigned char uart_rx_buffer[CMD_BUFFER_SIZE];
 
 void message_ready() {
-    unsigned char servo_id = rx_buffer[0];
-    unsigned char angle = rx_buffer[1];
+    unsigned char servo_id = uart_rx_buffer[0];
+    unsigned char angle = uart_rx_buffer[1];
 
     if (check_data_range(servo_id, angle)) {
         // apply command
@@ -63,7 +63,7 @@ void message_ready() {
 void uart_data_received() {
     // collect received byte into buffer
     unsigned char data = UCA0RXBUF;
-    rx_buffer[head++] = data;
+    uart_rx_buffer[head++] = data;
     // end of command message
     if (head == CMD_BUFFER_SIZE) {
         message_ready();

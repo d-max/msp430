@@ -1,6 +1,7 @@
 #include <msp430g2553.h>
 #include "servo.h"
 #include "uart.h"
+#include "i2c.h"
 
 void configure() {
     // turn off watchdog
@@ -19,13 +20,17 @@ int main(void) {
     configure();
 
     // config periphery
-    configure_uart();
-    configure_servos();
+    // configure_uart();
+    // configure_servos();
+    configure_i2c();
+
+    // for test purpose
+    i2c_reset();
+    i2c_start_transmition();
 
     // low power mode
     _BIS_SR(LPM0_bits);
 }
-
 
 #pragma vector = USCIAB0RX_VECTOR
 __interrupt void usci_rx_isr(void) {
@@ -34,5 +39,6 @@ __interrupt void usci_rx_isr(void) {
 
 #pragma vector = USCIAB0TX_VECTOR
 __interrupt void usci_tx_isr(void) {
-    uart_data_send();
+    // uart_data_send();
+    i2c_data_send();
 }
