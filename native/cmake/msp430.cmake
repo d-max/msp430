@@ -5,9 +5,9 @@ include(CMakeForceCompiler)
 #
 # Author: Matthew Iannucci
 #
-# NOTE: A lot of the paths here are hard coded. The reason is that this depends on the Energia App being installed on 
-# OSX which should have the same path on every computer. On Windows, it could be installed anywhere and its not 
-# worth the effort to find it rather than the user just writing it for themselves. Lastly, on Linux it assumes 
+# NOTE: A lot of the paths here are hard coded. The reason is that this depends on the Energia App being installed on
+# OSX which should have the same path on every computer. On Windows, it could be installed anywhere and its not
+# worth the effort to find it rather than the user just writing it for themselves. Lastly, on Linux it assumes
 # that all of the binaries are in /usr/bin and thus in the system path. It is assumed on linux the toolchain is
 # installed by a package manager at /usr.
 #
@@ -39,13 +39,15 @@ elseif(CMAKE_HOST_APPLE)
 else()
     CMAKE_FORCE_C_COMPILER(msp430-gcc GNU)
     CMAKE_FORCE_CXX_COMPILER(msp430-g++ GNU)
+    set(CMAKE_C_COMPILER msp430-gcc)
+    set(CMAKE_CXX_COMPILER msp430-g++)
 endif()
 
 # Where is the target environment located
-set(CMAKE_FIND_ROOT_PATH ${MSP430_PATH}) 
+set(CMAKE_FIND_ROOT_PATH ${MSP430_PATH})
 
 # Adjust the default behaviour of the FIND_XXX() commands:
-# search headers and libraries in the target environment, search 
+# search headers and libraries in the target environment, search
 # programs in the host environment
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
