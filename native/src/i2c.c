@@ -21,7 +21,6 @@ void _configure_i2c() {
     IE2 |= UCB0RXIE + UCB0TXIE;
 }
 
-int head = 0;
 char tx_buffer[PWM_BUFFER_SIZE];
 
 void transmit() {

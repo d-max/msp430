@@ -12,7 +12,7 @@ int main(void) {
     // config periphery
     //_configure_servos();
     _configure_bluetooth();
-    _configure_i2c();
+//    _configure_i2c();
 
     // low power mode
     _BIS_SR(LPM0_bits);
