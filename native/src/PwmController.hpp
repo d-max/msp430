@@ -3,6 +3,8 @@
 
 #include <Energia.h>
 
+#define PWM_TICKS 4096
+
 class PwmController {
     public:
         PwmController(uint8_t address);

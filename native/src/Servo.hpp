@@ -4,6 +4,8 @@
 #include <Energia.h>
 #include "PwmController.hpp"
 
+#define SERVO_PWM_FREQUENCY 50
+
 class Servo {
     public:
         Servo(uint8_t pin, PwmController *controller);

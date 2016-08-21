@@ -1,3 +1,8 @@
+/*
+UART: TX - P1.1, RX - P1.2
+I2C: SDA - P2.2, SCL - P2.1
+*/
+
 #include <Energia.h>
 #include <SoftwareSerial.h>
 #include <msp430g2553.h>
@@ -6,52 +11,32 @@
 
 #define BT_BAUD_RATE 9600
 #define BT_COMMAND_LENGTH 2
-
 #define PWM_BORAD_ADDRESS 0x40
-
-// #define LED P2_1
 
 PwmController pwmController = PwmController(PWM_BORAD_ADDRESS);
 Servo servo = Servo(0, &pwmController);
+char buffer[BT_COMMAND_LENGTH];
 
-// the setup routine runs once when you press reset:
 void setup() {
-    // use frequency 12 MHz
-    // BCSCTL1 = CALBC1_12MHZ;
-    // DCOCTL = CALDCO_12MHZ;
-
     // initialize UART
     Serial.begin(BT_BAUD_RATE);
-
     // initialize pwm
     pwmController.init();
-
-    // // initialize the digital pin as an output.
-    // pinMode(LED, OUTPUT);
-    //
-    // analogWrite(LED, 0);
+    pwmController.setFrequency(SERVO_PWM_FREQUENCY);
 }
 
-// the loop routine runs over and over again forever:
 void loop() {
 
-    pwmController.setPwm(0, 0);
+    if (Serial.available() > 0) {
+        // read command from UART
+        size_t read = Serial.readBytes(buffer, BT_COMMAND_LENGTH);
 
-    // while (Serial.available() <= 0);
-
-    // char buffer[BT_COMMAND_LENGTH];
-    //
-    // if (Serial.available() > 0) {
-    //     // read pwm value from UART
-    //     size_t read = Serial.readBytes(buffer, BT_COMMAND_LENGTH);
-    //
-    //     if (read == BT_COMMAND_LENGTH) {
-    //         Serial.write(1);
-    //         // set PWM
-    //         servo.setAngle(buffer[1]);
-    //
-    //         // analogWrite(LED, buffer[1]);
-    //
-    //     }
-    // }
+        if (read == BT_COMMAND_LENGTH) {
+            // set pwm value
+            uint8_t angle = buffer[1];
+            servo.setAngle(angle);
+            // send response to UART
+            Serial.write(1);
+        }
+    }
 }

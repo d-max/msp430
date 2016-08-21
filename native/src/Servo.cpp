@@ -1,12 +1,20 @@
+/*
+min servo time = 500 us
+max servo time = 2400 us
+ticks per second = 4096 * 50 = 204800
+min ticks = 204800 / 1000000 * 500 = 103
+max ticks = 204800 / 1000000 * 2400 = 492
+one degree time = (492 - 103) / 180 = ~2
+*/
+
 #include "Servo.hpp"
 
-#define ANGLE_MIN 0
-#define ANGLE_MAX 180
-#define PWM_TICKS 4095;
-
+#define MIN_TIME 103
+#define MAX_TIME 492
+#define ONE_DEGREE_TIME 2
 
 uint16_t angleToPwmValue(uint8_t angle) {
-    return 4095;
+    return MIN_TIME + ONE_DEGREE_TIME * angle;
 }
 
 Servo::Servo(uint8_t pin, PwmController *controller) {
@@ -20,10 +28,7 @@ uint8_t Servo::getAngle(void) {
 
 void Servo::setAngle(uint8_t angle) {
     this->angle = angle;
-}
-
-boolean Servo::isAngleInRange(uint8_t angle) {
-    return angle >= ANGLE_MIN && angle <= ANGLE_MAX;
+    this->setPwm();
 }
 
 void Servo::setPwm() {
