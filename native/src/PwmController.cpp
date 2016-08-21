@@ -25,7 +25,7 @@ PwmController::PwmController(uint8_t address) {
 }
 
 void PwmController::init(void) {
-    Wire.begin(0);
+    Wire.begin();
     writeByte(PCA9685_MODE1, 0x0);
 }
 

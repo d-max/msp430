@@ -3,9 +3,10 @@ UART: TX - P1.1, RX - P1.2
 I2C: SDA - P2.2, SCL - P2.1
 */
 
-#include <Energia.h>
+// #include <Energia.h>
+#include <Arduino.h>
 #include <SoftwareSerial.h>
-#include <msp430g2553.h>
+// #include <msp430g2553.h>
 #include "Servo.hpp"
 #include "PwmController.hpp"
 
