@@ -28,6 +28,9 @@ int main(void) {
     i2c_init_pwm();
     i2c_start_transmition();
 
+    // enable interruptions
+    _BIS_SR(GIE);
+
     // low power mode
     _BIS_SR(LPM0_bits);
 }

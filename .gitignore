@@ -5,3 +5,6 @@ local.properties
 .idea/
 .gradle
 build/
+.pioenvs
+.clang_complete
+.gcc-flags.json

@@ -54,8 +54,6 @@ void message_ready() {
     } else {
         UCA0TXBUF = BT_RESPONSE_FAILED;
     }
-
-    UCA0TXBUF = 1;
     // enable TX interruption
     UC0IE |= UCA0TXIE;
 }

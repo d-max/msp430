@@ -1,4 +1,0 @@
-defaultTasks 'build'
-task clean(type: Exec) { commandLine 'make', 'clean' }
-task build(type: Exec) { commandLine 'make', 'build' }
-task flash(type: Exec) { commandLine 'make', 'flash' }

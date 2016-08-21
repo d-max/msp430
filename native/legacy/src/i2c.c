@@ -8,15 +8,13 @@
 #include <msp430g2553.h>
 #include "i2c.h"
 #include "servo.h"
+#include "pca9685.h"
 
 #define I2C_OUT P1OUT
 #define I2C_SDA BIT6
 #define I2C_SCL BIT7
 #define I2C_DIVIDER 12
 #define I2C_BUFFER_SIZE 8
-#define PCA9685_ADDRESS 0x40
-#define PCA9685_MODE1 0x0
-#define PCA9685_MODE1 0x0
 
 void configure_i2c() {
     // use pins as USCI
@@ -43,7 +41,9 @@ void configure_i2c() {
 int size = 8;
 int counter = 0;
 
-unsigned char tx_buffer[] = {
+unsigned char tx_buffer[];
+
+unsigned char command[] = {
     0x6, // LED0_ON_L
     0x1,
     0x7, // LED0_ON_H
@@ -56,6 +56,9 @@ unsigned char tx_buffer[] = {
 
 void i2c_init_pwm() {
     // send reset
+    tx_buffer = char[1];
+    tx_buffer[0] = 0x00;
+    size = 1;
 
 }
 

@@ -49,9 +49,6 @@ void configure_servos() {
     // enable interruption caused by CCR0 and CCR1 values
     TA0CCTL0 = CCIE;
     TA0CCTL1 = CCIE;
-
-    // enable interruptions
-    _BIS_SR(GIE);
 }
 
 void set_servo_angle(unsigned char servo_id, unsigned char angle) {
