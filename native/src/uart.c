@@ -1,7 +1,26 @@
-#include "bluetooth.h"
+/*
+ frequency = 12 Mhz
+ baud rate (uart speed) = 9600
+
+ from table (page 424), UCBR0 = 1250
+ UCBR0 = UCA0BR0 + UCA0BR1 * 256
+ 1250 ~ 255 + 4 * 125 = 1279
+*/
+
+#include <msp430g2553.h>
+#include "uart.h"
 #include "servo.h"
 
-void _configure_bluetooth() {
+#define BT_OUT P1OUT
+#define BT_TX BIT1
+#define BT_RX BIT2
+#define BT_UART_SPEED 0xFF
+#define BT_UART_CORRECTION 0x04
+#define CMD_BUFFER_SIZE 8
+#define BT_RESPONSE_OK 1
+#define BT_RESPONSE_FAILED 2
+
+void configure_uart() {
     // use pins as UART
     P1SEL |= BT_RX + BT_TX;
     P1SEL2 |= BT_RX + BT_TX;
@@ -19,7 +38,6 @@ void _configure_bluetooth() {
     // enable RX interruption
     UC0IE |= UCA0RXIE;
 }
-
 
 int head = 0;
 char rx_buffer[CMD_BUFFER_SIZE];
@@ -92,14 +110,10 @@ int pow_decimal(int degree) {
     return result;
 }
 
-//~
 
-#pragma vector = USCIAB0RX_VECTOR
-__interrupt void UART_RECEIVE(void) {
+void uart_data_received(char data) {
     // collect received byte into buffer
-    char data = UCA0RXBUF;
     rx_buffer[head++] = data;
-
     // end of command message
     if (data == '\n') {
         message_ready();
@@ -107,8 +121,13 @@ __interrupt void UART_RECEIVE(void) {
     }
 }
 
-#pragma vector=USCIAB0TX_VECTOR
-__interrupt void USCI0TX_ISR(void) {
-    // disable TX interruptions
-    UC0IE &= ~UCA0TXIE;
+char uart_data_tosend() {
+
 }
+
+
+// #pragma vector=USCIAB0TX_VECTOR
+// __interrupt void USCI0TX_ISR(void) {
+//     // disable TX interruptions
+//     UC0IE &= ~UCA0TXIE;
+// }

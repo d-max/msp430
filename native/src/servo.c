@@ -4,8 +4,8 @@
 void _configure_servos() {
     /* config servos */
     servos[0].port = PORT1;
-    servos[0].bit = BIT0;
-    servos[0].pwm_time = 20000;
+    servos[0].bit = BIT4;
+    servos[0].pwm_time = 5000;
 
     // servos[1].port = PORT1;
     // servos[1].bit = BIT6;

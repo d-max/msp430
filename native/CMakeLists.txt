@@ -14,12 +14,12 @@ set(SOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src)
 # Source Files
 set(SOURCES
         ${SOURCE_DIRECTORY}/main.c
-        ${SOURCE_DIRECTORY}/bluetooth.c
+        ${SOURCE_DIRECTORY}/uart.c
         ${SOURCE_DIRECTORY}/servo.c)
 
 # Header files
 set(HEADERS
-        ${SOURCE_DIRECTORY}/bluetooth.h
+        ${SOURCE_DIRECTORY}/uart.h
         ${SOURCE_DIRECTORY}/servo.h)
 
 # Create the executable
