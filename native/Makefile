@@ -9,6 +9,7 @@ export OBJ
 OBJ += $(OUT)/servo.o
 OBJ += $(OUT)/main.o
 OBJ += $(OUT)/bluetooth.o
+OBJ += $(OUT)/i2c.o
 
 flash: $(OUT)/firmware.elf
 	@echo "Flashing";\
@@ -32,6 +33,10 @@ $(OUT)/bluetooth.o: $(SOURCES)/bluetooth.c #$(HEADERS)/bluetooth.h
 $(OUT)/main.o: $(SOURCES)/main.c $(HEADERS)/*.h
 	@echo "Compile $<";\
 	$(CC) $(CFLAGS) -I$(HEADERS) -c $(SOURCES)/main.c -o $(OUT)/main.o
+	
+$(OUT)/i2c.o: $(SOURCES)/i2c.c $(HEADERS)/*.h
+	@echo "Compile $<";\
+	$(CC) $(CFLAGS) -I$(HEADERS) -c $(SOURCES)/i2c.c -o $(OUT)/i2c.o
 
 clean:
 	rm -rf build
