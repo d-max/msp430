@@ -3,3 +3,5 @@ nbproject/
 local.properties
 *.iml
 .idea/
+.gradle
+build/
