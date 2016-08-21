@@ -29,7 +29,6 @@ public class BluetoothConnector implements Connector {
     private static final int RESPONSE_FAILED = 0x02;
     private static final String ADDRESS = "00:12:06:21:88:70";
     private static final String UUID = "00001101-0000-1000-8000-00805F9B34FB";
-    private static final String MESSAGE_TEMPLATE = "S%02dA%03d\n";
 
     private static Logger log = new Logger("BluetoothConnector");
 
@@ -84,10 +83,13 @@ public class BluetoothConnector implements Connector {
         }
         int response = RESPONSE_FAILED;
         try {
-            String message = String.format(MESSAGE_TEMPLATE, servoId, angle);
-            out.write(message.getBytes());
+            byte[] message = new byte[2];
+            message[0] = (byte) servoId;
+            message[1] = (byte) angle;
+            out.write(message);
             out.flush();
             response = in.read();
+            log.d("%d", response);
         } catch (IOException ex) {
             ex.printStackTrace();
             Util.closeSilently(in);
