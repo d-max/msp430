@@ -1,4 +1,4 @@
-#include "Servo.h"
+#include "Servo.hpp"
 
 #define ANGLE_MIN 0
 #define ANGLE_MAX 180

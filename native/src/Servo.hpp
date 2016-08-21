@@ -1,5 +1,8 @@
+#ifndef SERVO_HEADER
+#define SERVO_HEADER
+
 #include <Energia.h>
-#include "PwmController.h"
+#include "PwmController.hpp"
 
 class Servo {
     public:
@@ -15,3 +18,5 @@ class Servo {
 
         void setPwm();
 };
+
+#endif

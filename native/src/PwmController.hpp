@@ -1,3 +1,6 @@
+#ifndef PWM_HEADER
+#define PWM_HEADER
+
 #include <Energia.h>
 
 class PwmController {
@@ -13,3 +16,5 @@ class PwmController {
         uint8_t readByte(uint8_t address);
         void writeByte(uint8_t address, uint8_t value);
 };
+
+#endif

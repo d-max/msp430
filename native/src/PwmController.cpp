@@ -1,8 +1,8 @@
-#include "PwmController.h"
+#include "PwmController.hpp"
 #include <Wire.h>
 
 #define PCA9685_MODE1 0x0
-#define PCA9685_PRE_SCALE 0xFE
+#define PCA9685_PRESCALE 0xFE
 
 #define LED0_ON_L 0x6
 #define LED0_ON_H 0x7
@@ -19,15 +19,16 @@ PwmController::PwmController(uint8_t address) {
 void PwmController::init(void) {
     Wire.begin();
 
+
     uint8_t oldMode = readByte(PCA9685_MODE1);
     uint8_t newMode = (oldMode & MASK) | SLEEP;
     // go to sleep
     writeByte(PCA9685_MODE1, newMode);
     // set prescale
-    // writeByte(PCA9685_PRESCALE, prescale);
+    writeByte(PCA9685_PRESCALE, 0xFF);
     writeByte(PCA9685_MODE1, oldMode);
     delay(5);
-    writeByte(PCA9685_MODE1, oldMode | 0xa0); // auto increment bit + restart
+    writeByte(PCA9685_MODE1, oldMode | 0xa1); // auto increment bit + restart
 }
 
 void PwmController::setFrequency(float frequency){
@@ -36,11 +37,18 @@ void PwmController::setFrequency(float frequency){
 
 void PwmController::setPwm(uint8_t pin, uint16_t number) {
     Wire.beginTransmission(this->i2c_address);
-    Wire.write(LED0_ON_L + 4 * pin);
-    Wire.write(0);
-    Wire.write(0);
-    Wire.write(number);
-    Wire.write(number >> 8);
+    // Wire.write(LED0_ON_L + 4 * pin);
+    // Wire.write(0);
+    // Wire.write(0);
+    // Wire.write(number);
+    // Wire.write(number >> 8);
+
+    Wire.write(LED0_ON_L);
+    Wire.write(0x1);
+    Wire.write(0x0);
+    Wire.write(0x1);
+    Wire.write(0xa);
+
     Wire.endTransmission();
 }
 
