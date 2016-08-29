@@ -18,6 +18,7 @@ I2C:
 
 PwmController pwmController = PwmController(PWM_BORAD_ADDRESS);
 Servo servo = Servo(0, &pwmController);
+// Servo servo1 = Servo(1, &pwmController);
 char buffer[BT_COMMAND_LENGTH];
 
 void setup() {
@@ -37,6 +38,7 @@ void loop() {
         if (read == BT_COMMAND_LENGTH) {
             // set pwm value
             uint8_t angle = buffer[1];
+            // servo1.setAngle(0);
             servo.setAngle(angle);
             // send response to UART
             Serial.write(1);
