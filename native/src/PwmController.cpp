@@ -21,7 +21,7 @@ uint8_t calculatePrescale(float frequency) {
 }
 
 PwmController::PwmController(uint8_t address) {
-    this->i2c_address = address;
+    i2c_address = address;
 }
 
 void PwmController::init(void) {
@@ -45,7 +45,7 @@ void PwmController::setFrequency(float frequency) {
 }
 
 void PwmController::setPwm(uint8_t pin, uint16_t number) {
-    Wire.beginTransmission(this->i2c_address);
+    Wire.beginTransmission(i2c_address);
     Wire.write(LED0_ON_L + 4 * pin);
     Wire.write(0);
     Wire.write(0);
@@ -55,16 +55,16 @@ void PwmController::setPwm(uint8_t pin, uint16_t number) {
 }
 
 uint8_t PwmController::readByte(uint8_t address) {
-    Wire.beginTransmission(this->i2c_address);
+    Wire.beginTransmission(i2c_address);
     Wire.write(address);
     Wire.endTransmission();
 
-    Wire.requestFrom((uint8_t) this->i2c_address, (uint8_t) 1);
+    Wire.requestFrom((uint8_t) i2c_address, (uint8_t) 1);
     return Wire.read();
 }
 
 void PwmController::writeByte(uint8_t address, uint8_t value) {
-    Wire.beginTransmission(this->i2c_address);
+    Wire.beginTransmission(i2c_address);
     Wire.write(address);
     Wire.write(value);
     Wire.endTransmission();

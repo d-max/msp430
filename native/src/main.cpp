@@ -6,7 +6,7 @@ I2C:
     mode0: SDA - P1.7, SCL - P1.6
 */
 
-#include <Energia.h>
+#include <Arduino.h>
 #include <SoftwareSerial.h>
 #include <msp430g2553.h>
 #include "Servo.hpp"
@@ -24,7 +24,9 @@ char buffer[BT_COMMAND_LENGTH];
 void setup() {
     // initialize UART
     Serial.begin(BT_BAUD_RATE);
-    // initialize pwm
+    // init LED
+    // pinMode(RED_LED, OUTPUT);
+    // initialize PWM
     pwmController.init();
     pwmController.setFrequency(SERVO_PWM_FREQUENCY);
 }
@@ -38,6 +40,11 @@ void loop() {
         if (read == BT_COMMAND_LENGTH) {
             // set pwm value
             uint8_t angle = buffer[1];
+            // if (angle > 100) {
+            //     digitalWrite(RED_LED, HIGH);
+            // } else {
+            //     digitalWrite(RED_LED, LOW);
+            // }
             // servo1.setAngle(0);
             servo.setAngle(angle);
             // send response to UART
