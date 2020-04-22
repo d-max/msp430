@@ -22,7 +22,7 @@ set(CMAKE_EXE_LINKER_FLAGS "-L ${MSP430_PATH}/include")
 # Create a function that will instantiate a flash target command using mspdebug.
 # you may have to set the path to mspdebug if it is different. In this case we are
 # assuming mspdebug is in the system PATH
-set(MSPDEBUG_PATH ${MSP430_PATH}/bin/msp430-elf-gdb)
+set(MSPDEBUG_PATH mspdebug)
 
 function(setup_flash_target TARGET_NAME DRIVER)
     add_custom_target(flash
