@@ -1,15 +1,14 @@
 cmake_minimum_required(VERSION 2.8)
-project(HelloMSP430)
+project(ScaraArm)
 
 # Set the C flags. Only the compiler is set by the platform file. The -mmcu flag is REQUIRED
 # by mspgcc to find the correct include files and enable preprocessor defs. this definition should
 # be equal to the target board.
 set(MSP_CPU_FLAG -mmcu=msp430g2553)
-set(CMAKE_C_FLAGS "${MSP_CPU_FLAG}")
-set(CMAKE_EXE_LINKER_FLAGS "${MSP_CPU_FLAG}")
+set(CMAKE_C_FLAGS "${MSP_CPU_FLAG} -Og -g")
 
 # Set the source directory
-set(SOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(SOURCE_DIRECTORY ../src)
 
 # Source Files
 set(SOURCES
