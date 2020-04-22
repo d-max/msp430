@@ -1,3 +1,7 @@
+/*
+ PWM servo controlling functions.
+*/
+
 void configure_servos();
 
 void set_servo_angle(unsigned char servo_id, unsigned char angle);

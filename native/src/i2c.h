@@ -1,3 +1,7 @@
+/*
+ I2C transmition functions.
+*/
+
 void configure_i2c();
 
 void i2c_reset();
