@@ -13,15 +13,13 @@ set(SOURCE_DIRECTORY ../src)
 # Source Files
 set(SOURCES
         ${SOURCE_DIRECTORY}/main.c
-        ${SOURCE_DIRECTORY}/uart.c
         ${SOURCE_DIRECTORY}/servo.c
-        ${SOURCE_DIRECTORY}/i2c.c)
+)
 
 # Header files
 set(HEADERS
-        ${SOURCE_DIRECTORY}/uart.h
         ${SOURCE_DIRECTORY}/servo.h
-        ${SOURCE_DIRECTORY}/i2c.h)
+)
 
 # Create the executable
 add_executable(firmware.elf ${HEADERS} ${SOURCES})
