@@ -33,7 +33,7 @@ struct servo servos[SRV_COUNT];
 int cursor = 0;
 
 void configure_servos() {
-    /* config servos */
+    // config servos
     servos[0].port = PORT1;
     servos[0].bit = BIT4;
     servos[0].pwm_time = 1000;
@@ -41,7 +41,7 @@ void configure_servos() {
     // config pins
     P1DIR |= servos[0].bit;
 
-    /* config timer A */
+    // config timer A
     // sub-main clock + 4-divider + up mode + initialize
     TA0CTL = TASSEL_2 + ID_2 + MC_1 + TACLR;
     // set time of pdm one iteration - 1/50 of second

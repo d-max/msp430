@@ -27,7 +27,6 @@ void configure_uart() {
     // init pins
     BT_OUT &= ~BT_RX;
     BT_OUT &= ~BT_TX;
-    /* init UART */
     // use sub-main clock
     UCA0CTL1 |= UCSSEL_2;
     // set uart speed
