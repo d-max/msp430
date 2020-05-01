@@ -54,29 +54,29 @@ void configure_servos() {
 
     // version 2 working
 
-    P1DIR |= BIT6;
-    P1SEL |= BIT6;
+    P2DIR |= BIT1;
+    P2SEL |= BIT1;
     
-    TA0CCR0 = PWM_PERIOD_TIME_A;
-    TA0CCTL1 = OUTMOD_7;
-    TA0CCR1 = PWM_MIN_TIME;
-    TA0CTL = TASSEL_2 + ID_2 + MC_1;
+    TA1CCR0 = PWM_PERIOD_TIME_A;
+    TA1CCR1 = PWM_MIN_TIME;
+    TA1CTL = TASSEL_2 + ID_2 + MC_1;
+    TA1CCTL1 = OUTMOD_7;
 
     // enable interruptions
-    _BIS_SR(GIE);
+    // _BIS_SR(GIE);
 }
 
 void set_servo_angle(unsigned char servo_id, unsigned char angle) {
     int time = angle * ONE_DEGREE_TIME + PWM_MIN_TIME;
     // servos[servo_id].pwm_time = time;
-    TA0CCR1 = time;
+    TA1CCR1 = time;
 }
 
-// int check_data_range(unsigned char servo_id, unsigned char angle) {
-//     // if (servo_id < 0 || servo_id >= SRV_COUNT) return 0;
-//     if (angle < 0 || angle > 180) return 0;
-//     return 1;
-// }
+int check_data_range(unsigned char servo_id, unsigned char angle) {
+    // if (servo_id < 0 || servo_id >= SRV_COUNT) return 0;
+    if (angle < 0 || angle > 180) return 0;
+    return 1;
+}
 
 // struct servo * current_servo() {
 //     return &servos[cursor];
