@@ -13,12 +13,12 @@ set(SOURCE_DIRECTORY ../src)
 # Source Files
 set(SOURCES
         ${SOURCE_DIRECTORY}/main.c
-        ${SOURCE_DIRECTORY}/servo.c
+        ${SOURCE_DIRECTORY}/led.c
 )
 
 # Header files
 set(HEADERS
-        ${SOURCE_DIRECTORY}/servo.h
+        ${SOURCE_DIRECTORY}/led.h
 )
 
 # Create the executable
