@@ -1,5 +1,5 @@
 /*
- * UART transmission functions
+ * UART transmission
  */
 
 #include <stdint.h>

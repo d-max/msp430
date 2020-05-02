@@ -5,9 +5,8 @@
 
 #include <energia.h>
 #include <SoftwareSerial.h>
+#include "hardware.h"
 #include "uart.h"
-
-#define BLUETOOTH_BAUD_RATE 9600
 
 void Uart::setup() {
     Serial.begin(BLUETOOTH_BAUD_RATE);
