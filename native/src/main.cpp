@@ -8,29 +8,26 @@
 Led led;
 Uart uart;
 Pwm pwm(PCA9685_I2C_ADDRESS, SERVO_PWM_FREQUENCY);
-Servo servo0 = Servo(0, &pwm);
-Servo servo1 = Servo(1, &pwm);
-Servo servo2 = Servo(2, &pwm);
+Servo * servos[SERVO_QUANTITY];
+Package package;
 
 void setup() {
+    // periphery controllers
     led.setup();
     pwm.setup();
     uart.setup();
+    // servos controllers
+    for (char i = 0; i < SERVO_QUANTITY; i ++) {
+        servos[i] = new Servo(i, &pwm);
+    }
 }
 
 void loop() {
-//    if (uart.data_available()) {
-//        int data = uart.read();
-//        if (data > 90) led.on(); else led.off();
-//        uart.write();
-//    }
-
-    servo0.min_angle();
-    System::wait(1000);
-    servo0.max_angle();
-    System::wait(1000);
-    servo0.min_angle();
-    System::wait(1000);
-    servo0.max_angle();
-
+    if (uart.data_available()) {
+        uint8_t result = uart.read(&package);
+        if (result != 0) {
+            servos[package.servo] -> set_angle(package.angle);
+        }
+        uart.write();
+    }
 }

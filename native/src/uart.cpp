@@ -3,6 +3,7 @@
  * TX - P1.1, RX - P1.2
  */
 
+#include <stddef.h>
 #include <energia.h>
 #include <SoftwareSerial.h>
 #include "hardware.h"
@@ -16,13 +17,14 @@ bool Uart::data_available() {
     return Serial.available() > 0;
 }
 
-uint8_t Uart::read() {
+uint8_t Uart::read(Package * package) {
     size_t size = Serial.readBytes(buffer, UART_PACKAGE_LENGTH);
     if (size == UART_PACKAGE_LENGTH) {
-        uint8_t angle = buffer[1];
-        return angle;
+        package -> servo = buffer[0];
+        package -> angle = buffer[1];
+        return 1;
     } else {
-        return -1;
+        return 0;
     }
 }
 
