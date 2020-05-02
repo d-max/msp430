@@ -4,5 +4,5 @@
 
 class System {
     public: 
-    static void wait(uint8_t millis);
+        static void wait(uint8_t millis);
 };
