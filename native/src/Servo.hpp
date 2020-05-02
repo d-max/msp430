@@ -1,7 +1,7 @@
 #ifndef SERVO_HEADER
 #define SERVO_HEADER
 
-#include <Arduino.h>
+#include <Energia.h>
 #include "PwmController.hpp"
 
 #define SERVO_PWM_FREQUENCY 50

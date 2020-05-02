@@ -18,6 +18,8 @@ public class MainActivity extends Activity {
     @Bind(R.id.log) TextView log;
     @Bind(R.id.connect) Button connect;
     @Bind(R.id.servo) SeekBar seekBar;
+    @Bind(R.id.servo2) SeekBar seekBar2;
+    @Bind(R.id.servo3) SeekBar seekBar3;
     @Bind(R.id.status) ImageView status;
 
     private ConnectorServiceClient connector = new ConnectorServiceClient();
@@ -36,7 +38,13 @@ public class MainActivity extends Activity {
     private void initViews() {
         seekBar.setMax(180);
         seekBar.setEnabled(false);
-        seekBar.setOnSeekBarChangeListener(new TrackingListener());
+        seekBar.setOnSeekBarChangeListener(new TrackingListener(0));
+        seekBar2.setMax(180);
+        seekBar2.setEnabled(false);
+        seekBar2.setOnSeekBarChangeListener(new TrackingListener(1));
+        seekBar3.setMax(180);
+        seekBar3.setEnabled(false);
+        seekBar3.setOnSeekBarChangeListener(new TrackingListener(2));
         connect.setOnClickListener(new ConnectClickListener());
         log.setOnClickListener(new ClearListener());
         status.setBackgroundResource(R.drawable.disconnected);
@@ -64,6 +72,8 @@ public class MainActivity extends Activity {
             connect.setEnabled(true);
             connect.setText(R.string.disconnect);
             seekBar.setEnabled(true);
+            seekBar2.setEnabled(true);
+            seekBar3.setEnabled(true);
         }
     }
 
@@ -76,6 +86,8 @@ public class MainActivity extends Activity {
                 status.setBackgroundResource(R.drawable.disconnected);
                 connect.setText(R.string.connect);
                 seekBar.setEnabled(false);
+                seekBar2.setEnabled(false);
+                seekBar3.setEnabled(false);
                 connector.unbindFromService(MainActivity.this);
             } else {
                 log.append("Bind...\n");
@@ -95,12 +107,17 @@ public class MainActivity extends Activity {
 
     class TrackingListener implements SeekBar.OnSeekBarChangeListener {
 
+        private int servoId;
+
+        public TrackingListener(int servoId) {
+            this.servoId = servoId;
+        }
+
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
             int value = seekBar.getProgress();
-            int id = 0;
-            log.append(String.format("Send servo command: %d %d\n", id, value));
-            connector.sendCommand(id, value);
+            log.append(String.format("Send servo command: %d %d\n", servoId, value));
+            connector.sendCommand(servoId, value);
         }
 
         @Override

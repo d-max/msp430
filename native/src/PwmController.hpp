@@ -1,7 +1,7 @@
 #ifndef PWM_HEADER
 #define PWM_HEADER
 
-#include <Arduino.h>
+#include <Energia.h>
 
 #define PWM_TICKS 4096
 
