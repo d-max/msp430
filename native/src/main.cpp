@@ -1,28 +1,20 @@
-#include "energia.h"
+#include <energia.h>
 #include "system.hpp"
 #include "uart.hpp"
 #include "led.hpp"
 
 Led led;
-
-void blink();
+Uart uart;
 
 void setup() {
-    led = Led();
+    led.setup();
+    uart.setup();
 }
 
 void loop() {
-
-    blink();
-    blink();
-    blink();
-
-}
-
-void blink() {
-    led.on();
-    System::wait(500);
-
-    led.off();
-    System::wait(500);
+    if (uart.data_available()) {
+        int data = uart.read();
+        if (data > 90) led.on(); else led.off();
+        uart.write();
+    }
 }
