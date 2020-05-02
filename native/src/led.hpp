@@ -4,7 +4,7 @@
 
 class Led {
     public:    
+        void setup();
         void on();
         void off();
-        Led();
 };

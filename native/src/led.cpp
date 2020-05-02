@@ -7,7 +7,7 @@
 
 #define LED RED_LED
 
-Led::Led() {
+void Led::setup() {
     pinMode(LED, OUTPUT);
 }
 
