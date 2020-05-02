@@ -1,7 +1,7 @@
 #include <energia.h>
-#include "system.hpp"
-#include "uart.hpp"
-#include "led.hpp"
+#include "system.h"
+#include "uart.h"
+#include "led.h"
 
 Led led;
 Uart uart;

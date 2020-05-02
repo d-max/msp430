@@ -3,7 +3,7 @@
  */
 
 #include <energia.h>
-#include "system.hpp"
+#include "system.h"
 
 void System::wait(uint8_t millis) {
     delay(millis);

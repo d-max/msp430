@@ -3,7 +3,7 @@
  */
 
 #include <energia.h>
-#include "led.hpp"
+#include "led.h"
 
 #define LED RED_LED
 

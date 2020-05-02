@@ -5,7 +5,7 @@
 
 #include <energia.h>
 #include <SoftwareSerial.h>
-#include "uart.hpp"
+#include "uart.h"
 
 #define BLUETOOTH_BAUD_RATE 9600
 
