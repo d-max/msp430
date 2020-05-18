@@ -1,0 +1,55 @@
+package dmax.scara.android.connect.bluetooth
+
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothSocket
+import dmax.scara.android.app.Config
+import dmax.scara.android.connect.Command
+import dmax.scara.android.connect.Connector
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.io.IOException
+import java.io.OutputStream
+import java.util.UUID
+
+class BluetoothConnector(private val adapter: BluetoothAdapter) : Connector {
+
+    private var socket: BluetoothSocket? = null
+    private var outStream: OutputStream? = null
+
+    override suspend fun connect() = withContext(Dispatchers.IO) {
+        val device = adapter.getRemoteDevice(Config.Bluetooth.address)
+        val uuid = UUID.fromString(Config.Bluetooth.uuid)
+        try {
+            socket = device.createRfcommSocketToServiceRecord(uuid).apply {
+                connect()
+                outStream = outputStream
+            }
+        } catch (_: IOException) {
+            close()
+        }
+    }
+
+    override suspend fun send(command: Command) = withContext(Dispatchers.IO) {
+        if (socket?.isConnected != true) return@withContext
+
+        val (servo, angle) = command
+        val message = byteArrayOf(servo.id, angle)
+        try {
+            outStream?.let {
+                it.write(message)
+                it.flush()
+            }
+        } catch (_: IOException) {
+            close()
+        }
+    }
+
+    override suspend fun disconnect() = withContext(Dispatchers.IO) {
+        close()
+    }
+
+    private fun close() {
+        outStream?.close()
+        socket?.close()
+    }
+}
