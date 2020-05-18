@@ -4,5 +4,6 @@ with(rootProject) {
 }
 
 include(
-    ":android"
+    ":android",
+    ":new"
 )
