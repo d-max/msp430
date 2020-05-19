@@ -6,10 +6,22 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
     <application
-        
+        android:name=".app.App"
         android:label="@string/launcherName"
         >
 
+        <activity
+            android:name=".present.main.MainActivity"
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait"
+            >
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+
+        </activity>
 
     </application>
 

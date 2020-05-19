@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/home"
+        android:enabled="true"
+        android:icon="@drawable/ic_home"
+        android:title="@string/navigation_home"
+        />
+
+    <item
+        android:id="@+id/tune"
+        android:enabled="true"
+        android:icon="@drawable/ic_tune"
+        android:title="@string/navigation_tune"
+        />
+
+    <item
+        android:id="@+id/touch"
+        android:enabled="true"
+        android:icon="@drawable/ic_touch"
+        android:title="@string/navigation_touch"
+        />
+
+    <item
+        android:id="@+id/draw"
+        android:enabled="true"
+        android:icon="@drawable/ic_shapes"
+        android:title="@string/navigation_shapes"
+        />
+
+</menu>
