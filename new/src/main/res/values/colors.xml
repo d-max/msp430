@@ -4,7 +4,7 @@
     <color name="background">@color/black_wash</color>
     <color name="surface">@color/blue_plaza</color>
     <color name="navigation">@color/blue_plaza</color>
-    <color name="accent_inactive">@color/davis_grey</color>
-    <color name="accent_active">@color/dark_stone</color>
+    <color name="accent_inactive">@color/dark_stone</color>
+    <color name="accent_active">@color/electron_blue</color>
 
 </resources>
