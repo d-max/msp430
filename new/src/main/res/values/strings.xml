@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="launcherName">Scara</string>
+    <string name="navigation_home">Home</string>
+    <string name="navigation_tune">Control</string>
+    <string name="navigation_touch">Locate</string>
+    <string name="navigation_shapes">Draw</string>
 </resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <color name="black_wash">#23272b</color>
+    <color name="blue_plaza">#2f343a</color>
+    <color name="crypt_grey">#383B42</color>
+    <color name="davis_grey">#535556</color>
+    <color name="dark_stone">#999997</color>
+    <color name="nickel_grey">#C2C1BE</color>
+
+</resources>

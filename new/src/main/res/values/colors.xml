@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="background">@color/black_wash</color>
+    <color name="surface">@color/blue_plaza</color>
+    <color name="navigation">@color/blue_plaza</color>
+    <color name="accent_inactive">@color/davis_grey</color>
+    <color name="accent_active">@color/dark_stone</color>
+
+</resources>
