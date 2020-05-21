@@ -6,5 +6,7 @@
     <color name="navigation">@color/blue_plaza</color>
     <color name="accent_inactive">@color/dark_stone</color>
     <color name="accent_active">@color/electron_blue</color>
+    <color name="primary">@color/nickel_grey</color>
+    <color name="primary_dark">@color/dark_stone</color>
 
 </resources>

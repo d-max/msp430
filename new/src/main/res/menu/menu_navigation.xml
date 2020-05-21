@@ -2,28 +2,28 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/home"
+        android:id="@+id/page_home"
         android:enabled="true"
         android:icon="@drawable/ic_home"
         android:title="@string/navigation_home"
         />
 
     <item
-        android:id="@+id/tune"
+        android:id="@+id/page_control"
         android:enabled="true"
         android:icon="@drawable/ic_tune"
         android:title="@string/navigation_tune"
         />
 
     <item
-        android:id="@+id/touch"
+        android:id="@+id/page_locate"
         android:enabled="true"
         android:icon="@drawable/ic_touch"
         android:title="@string/navigation_touch"
         />
 
     <item
-        android:id="@+id/draw"
+        android:id="@+id/page_shapes"
         android:enabled="true"
         android:icon="@drawable/ic_shapes"
         android:title="@string/navigation_shapes"
