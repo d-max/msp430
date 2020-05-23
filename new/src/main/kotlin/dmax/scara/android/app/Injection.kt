@@ -18,7 +18,7 @@ fun core() = module {
 fun mvvm() = module {
 
     viewModel {
-        HomeModel() as HomeContract.Model
+        HomeModel(connector = get()) as HomeContract.Model
     }
 
 }

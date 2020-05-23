@@ -12,8 +12,10 @@ import dmax.scara.android.misc.observe
 import dmax.scara.android.present.home.HomeContract.Data
 import dmax.scara.android.present.home.HomeContract.Event
 import dmax.scara.android.present.home.HomeContract.Model
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -21,11 +23,22 @@ import org.koin.android.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment() {
 
-    private val scope = MainScope()
     private val model: Model by viewModel()
+
+    private lateinit var scope: CoroutineScope
     private lateinit var job: Job
     private lateinit var led: AppCompatImageView
     private lateinit var button: AppCompatToggleButton
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        scope = MainScope()
+    }
+
+    override fun onDestroy() {
+        scope.cancel()
+        super.onDestroy()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
         inflater.inflate(R.layout.fragment_home, container, false)
