@@ -24,7 +24,13 @@ class HomeModel(
 
     override fun event(e: Event) {
         when(e) {
-            Event.Power -> if (connector.isConnected) disconnect() else connect()
+            Event.Power -> {
+                if (data.value == Data.Error) {
+                    data.value = Data.Disconnected
+                    return
+                }
+                if (connector.isConnected) disconnect() else connect()
+            }
         }
     }
 
