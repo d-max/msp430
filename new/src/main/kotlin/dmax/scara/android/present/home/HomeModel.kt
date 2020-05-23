@@ -25,11 +25,23 @@ class HomeModel(
     override fun event(e: Event) {
         when(e) {
             Event.Power -> {
+                // was connecting and failed -> just turn off led
                 if (data.value == Data.Error) {
                     data.value = Data.Disconnected
                     return
                 }
-                if (connector.isConnected) disconnect() else connect()
+                // is currently connecting -> cancel and turn off
+                if (job?.isActive == true) {
+                    job?.cancel()
+                    data.value = Data.Disconnected
+                    return
+                }
+                // previous completed -> normal behaviour
+                if (connector.isConnected) {
+                    disconnect()
+                } else {
+                    connect()
+                }
             }
         }
     }
