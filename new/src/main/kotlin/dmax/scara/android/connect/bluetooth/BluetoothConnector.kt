@@ -11,12 +11,16 @@ import java.io.IOException
 import java.io.OutputStream
 import java.util.UUID
 
-class BluetoothConnector(private val adapter: BluetoothAdapter) : Connector {
+class BluetoothConnector : Connector {
 
     private var socket: BluetoothSocket? = null
     private var outStream: OutputStream? = null
 
+    override val isConnected: Boolean
+        get() = outStream != null
+
     override suspend fun connect() = withContext(Dispatchers.IO) {
+        val adapter = BluetoothAdapter.getDefaultAdapter()
         val device = adapter.getRemoteDevice(Config.Bluetooth.address)
         val uuid = UUID.fromString(Config.Bluetooth.uuid)
         try {
