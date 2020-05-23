@@ -12,6 +12,7 @@ import dmax.scara.android.misc.observe
 import dmax.scara.android.present.home.HomeContract.Data
 import dmax.scara.android.present.home.HomeContract.Event
 import dmax.scara.android.present.home.HomeContract.Model
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -22,6 +23,7 @@ class HomeFragment : Fragment() {
 
     private val scope = MainScope()
     private val model: Model by viewModel()
+    private lateinit var job: Job
     private lateinit var led: AppCompatImageView
     private lateinit var button: AppCompatToggleButton
 
@@ -38,16 +40,31 @@ class HomeFragment : Fragment() {
 
         observe(model.data) {
             when (it) {
-                Data.Error -> ledError()
-                Data.Connected -> ledOn()
-                Data.Connecting -> ledBlink()
-                Data.Disconnected -> ledOff()
+                Data.Connecting -> {
+                    ledBlink()
+                }
+                Data.Error -> {
+                    stopBlink()
+                    ledError()
+                }
+                Data.Connected -> {
+                    stopBlink()
+                    ledOn()
+                }
+                Data.Disconnected -> {
+                    stopBlink()
+                    ledOff()
+                }
             }
         }
     }
 
+    private fun stopBlink() {
+        if (this::job.isInitialized) job.cancel()
+    }
+
     private fun ledBlink() {
-        scope.launch {
+        job = scope.launch {
             while (isActive) {
                 ledOn()
                 delay(200)
@@ -57,12 +74,15 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun ledOff() =
+    private fun ledOff() {
         led.setImageResource(R.drawable.ic_led_off)
+    }
 
-    private fun ledOn() =
+    private fun ledOn() {
         led.setImageResource(R.drawable.ic_led_blue)
+    }
 
-    private fun ledError() =
+    private fun ledError() {
         led.setImageResource(R.drawable.ic_led_red)
+    }
 }
