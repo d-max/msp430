@@ -26,6 +26,17 @@ class MainActivity : FragmentActivity() {
             adapter = PagerAdapter()
             registerOnPageChangeCallback(PagerCallback())
         }
+        bottomBar.setOnNavigationItemSelectedListener {
+            val page = when (it.itemId) {
+                R.id.page_home -> 0
+                R.id.page_control -> 1
+                R.id.page_locate -> 2
+                R.id.page_shapes -> 3
+                else -> error("no page")
+            }
+            viewPager.setCurrentItem(page, true)
+            true
+        }
     }
 
     private inner class PagerCallback : ViewPager2.OnPageChangeCallback() {
