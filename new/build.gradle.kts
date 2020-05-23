@@ -21,6 +21,7 @@ dependencies {
     implementation("org.koin:koin-core:2.1.5")
     implementation("org.koin:koin-core-ext:2.1.5")
     implementation("org.koin:koin-android:2.1.5")
+    implementation("org.koin:koin-android-viewmodel:2.1.5")
 }
 
 android {
