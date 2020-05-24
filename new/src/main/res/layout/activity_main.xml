@@ -26,6 +26,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:itemIconTint="@drawable/selector_navigation"
+        app:itemRippleColor="?attr/colorControlHighlight"
         app:menu="@menu/menu_navigation"
         app:labelVisibilityMode="unlabeled"
         />

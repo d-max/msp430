@@ -5,6 +5,7 @@
         <item name="colorAccent">@color/accent_active</item>
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorControlHighlight">@color/ripple</item>
         <item name="android:navigationBarColor">@color/surface</item>
         <item name="android:statusBarColor">@color/background</item>
     </style>

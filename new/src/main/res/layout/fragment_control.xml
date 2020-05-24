@@ -6,15 +6,62 @@
     android:layout_height="match_parent"
     >
 
-    <TextView
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:orientation="vertical"
+        android:rotation="270"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="Control"
-        android:textSize="24dp"
-        />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+
+        <androidx.appcompat.widget.AppCompatSeekBar
+            android:id="@+id/seekbar_base"
+            android:layout_width="@dimen/seekbar_size"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:progressDrawable="@drawable/selector_seekbar_background"
+            android:thumbOffset="0dp"
+            android:max="180"
+            />
+
+        <androidx.appcompat.widget.AppCompatSeekBar
+            android:id="@+id/seekbar_elbow"
+            android:layout_width="@dimen/seekbar_size"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:layout_marginTop="@dimen/seekbar_margin"
+            android:layout_marginBottom="@dimen/seekbar_margin"
+            android:progressDrawable="@drawable/selector_seekbar_background"
+            android:thumb="@drawable/selector_seekbar_thumb"
+            android:thumbOffset="0dp"
+            android:max="180"
+            />
+
+        <androidx.appcompat.widget.AppCompatSeekBar
+            android:id="@+id/seekbar_wrist"
+            android:layout_width="@dimen/seekbar_size"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:progressDrawable="@drawable/selector_seekbar_background"
+            android:thumb="@drawable/selector_seekbar_thumb"
+            android:thumbOffset="0dp"
+            android:max="180"
+            />
+
+    </LinearLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
