@@ -16,7 +16,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_bias="0.4"
-        android:background="@drawable/selection_button"
+        android:background="@drawable/selector_button"
         android:textOn="@null"
         android:textOff="@null"
         />

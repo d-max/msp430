@@ -2,4 +2,8 @@
 <resources>
     <dimen name="led_size">16dp</dimen>
     <dimen name="button_size">120dp</dimen>
+    <dimen name="button_icon_size">60dp</dimen>
+    <dimen name="seekbar_size">400dp</dimen>
+    <dimen name="thumb_size">24dp</dimen>
+    <dimen name="seekbar_margin">64dp</dimen>
 </resources>
