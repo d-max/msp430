@@ -2,7 +2,7 @@
 <resources>
 
     <color name="background">@color/black_wash</color>
-    <color name="surface">@color/blue_plaza</color>
+    <color name="surface">@color/crypt_grey</color>
     <color name="border">@color/black</color>
     <color name="navigation">@color/blue_plaza</color>
     <color name="accent_inactive">@color/dark_stone</color>

@@ -26,6 +26,7 @@
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:progressDrawable="@drawable/selector_seekbar_background"
+            android:thumb="@drawable/selector_seekbar_thumb"
             android:thumbOffset="0dp"
             android:max="180"
             />
