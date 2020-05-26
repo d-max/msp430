@@ -17,7 +17,7 @@ class ControlFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.initSeekBar(R.id.seekbar_base, R.id.base) {
-            
+
         }
         view.initSeekBar(R.id.seekbar_elbow, R.id.elbow) {
 

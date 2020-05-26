@@ -2,11 +2,15 @@
 <resources>
 
     <color name="background">@color/black_wash</color>
+    <color name="background_light">@color/blue_plaza</color>
     <color name="surface">@color/crypt_grey</color>
+    <color name="surface_30">@color/crypt_grey_30</color>
     <color name="border">@color/black</color>
     <color name="navigation">@color/blue_plaza</color>
     <color name="accent_inactive">@color/dark_stone</color>
     <color name="accent_active">@color/electron_blue</color>
+    <color name="accent_active_30">@color/electron_blue_30</color>
+    <color name="accent_active_50">@color/electron_blue_50</color>
     <color name="primary">@color/nickel_grey</color>
     <color name="primary_dark">@color/dark_stone</color>
     <color name="ripple">@color/nickel_grey_05</color>

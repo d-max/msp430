@@ -5,11 +5,14 @@
     <color name="black_wash">#23272b</color>
     <color name="blue_plaza">#2f343a</color>
     <color name="crypt_grey">#383B42</color>
+    <color name="crypt_grey_30">#4D383B42</color>
     <color name="davis_grey">#535556</color>
     <color name="dark_stone">#999997</color>
     <color name="nickel_grey">#C2C1BE</color>
     <color name="nickel_grey_05">#0DC2C1BE</color>
     <color name="electron_blue">#0C7CD1</color>
+    <color name="electron_blue_30">#4D0C7CD1</color>
+    <color name="electron_blue_50">#800C7CD1</color>
     <color name="transparent">#00000000</color>
 
 </resources>
