@@ -6,4 +6,7 @@
     <dimen name="seekbar_size">350dp</dimen>
     <dimen name="thumb_size">24dp</dimen>
     <dimen name="seekbar_margin">64dp</dimen>
+    <dimen name="servo_width">48dp</dimen>
+    <dimen name="servo_height">32dp</dimen>
+    <dimen name="bone_height">4dp</dimen>
 </resources>

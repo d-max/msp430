@@ -7,6 +7,7 @@
     >
 
     <LinearLayout
+        android:id="@+id/controls"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -14,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/base"
         >
 
         <androidx.appcompat.widget.AppCompatSeekBar
@@ -63,6 +64,79 @@
 
     </LinearLayout>
 
+    <View
+        android:id="@+id/base"
+        android:layout_width="@dimen/servo_width"
+        android:layout_height="@dimen/servo_height"
+        android:layout_marginBottom="64dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/elbow"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@drawable/shape_rectangle_surface"
+        />
 
+    <View
+        android:id="@+id/elbow"
+        android:layout_width="@dimen/servo_width"
+        android:layout_height="@dimen/servo_height"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toBottomOf="@id/base"
+        app:layout_constraintStart_toEndOf="@id/base"
+        app:layout_constraintEnd_toStartOf="@id/wrist"
+        android:background="@drawable/shape_rectangle_surface"
+        />
+
+    <View
+        android:id="@+id/wrist"
+        android:layout_width="@dimen/servo_width"
+        android:layout_height="@dimen/servo_height"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="@id/elbow"
+        app:layout_constraintStart_toEndOf="@id/elbow"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/shape_rectangle_surface"
+        />
+
+    <View
+        android:id="@+id/femur"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/bone_height"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintEnd_toEndOf="@id/elbow"
+        app:layout_constraintBottom_toTopOf="@id/base"
+        app:layout_constraintStart_toStartOf="@id/base"
+        android:background="@color/surface"
+        />
+
+    <View
+        android:id="@+id/tibia"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/bone_height"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintEnd_toEndOf="@id/wrist"
+        app:layout_constraintBottom_toTopOf="@id/femur"
+        app:layout_constraintStart_toStartOf="@id/elbow"
+        android:background="@color/surface"
+        />
+
+    <View
+        android:layout_width="4dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="@id/base"
+        app:layout_constraintEnd_toEndOf="@id/base"
+        app:layout_constraintBottom_toTopOf="@id/base"
+        app:layout_constraintTop_toBottomOf="@id/femur"
+        android:background="@color/surface"
+        />
+
+    <View
+        android:layout_width="4dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="@id/elbow"
+        app:layout_constraintEnd_toEndOf="@id/elbow"
+        app:layout_constraintBottom_toTopOf="@id/elbow"
+        app:layout_constraintTop_toBottomOf="@id/tibia"
+        android:background="@color/surface"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
