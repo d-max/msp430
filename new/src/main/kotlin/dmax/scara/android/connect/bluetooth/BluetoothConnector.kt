@@ -54,6 +54,8 @@ class BluetoothConnector : Connector {
 
     private fun close() {
         outStream?.close()
+        outStream = null
         socket?.close()
+        socket = null
     }
 }
