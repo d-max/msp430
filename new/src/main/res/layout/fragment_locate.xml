@@ -8,6 +8,7 @@
     >
 
     <dmax.scara.android.present.common.LocateView
+        android:id="@+id/locate"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="64dp"
@@ -16,6 +17,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:background="@drawable/shape_rectangle_rounded_surface"
+        />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/coordinates"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textColor="@color/accent_active"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/locate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
