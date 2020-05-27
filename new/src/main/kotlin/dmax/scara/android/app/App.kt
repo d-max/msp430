@@ -18,7 +18,8 @@ class App : Application() {
             androidContext(this@App)
             modules(
                 core(),
-                mvvm()
+                mvvm(),
+                actors()
             )
         }
 

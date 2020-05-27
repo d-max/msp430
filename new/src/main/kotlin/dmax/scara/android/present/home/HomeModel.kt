@@ -1,7 +1,9 @@
 package dmax.scara.android.present.home
 
 import androidx.lifecycle.MutableLiveData
-import dmax.scara.android.connect.Connector
+import dmax.scara.android.actors.ConnectActor
+import dmax.scara.android.actors.ConnectionStateRequest
+import dmax.scara.android.actors.DisconnectActor
 import dmax.scara.android.present.home.HomeContract.Data
 import dmax.scara.android.present.home.HomeContract.Event
 import kotlinx.coroutines.Job
@@ -10,7 +12,9 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 class HomeModel(
-    private val connector: Connector
+    private val connect: ConnectActor,
+    private val disconnect: DisconnectActor,
+    private val isConnected: ConnectionStateRequest
 ) : HomeContract.Model() {
 
     private val scope = MainScope()
@@ -37,29 +41,22 @@ class HomeModel(
                     return
                 }
                 // previous completed -> normal behaviour
-                if (connector.isConnected) {
-                    disconnect()
-                } else {
-                    connect()
-                }
+                switch()
             }
         }
     }
 
-    private fun connect() {
+    private fun switch() {
         job?.cancel()
         job = scope.launch {
-            data.value = Data.Connecting
-            connector.connect()
-            data.value = if (connector.isConnected) Data.Connected else Data.Error
-        }
-    }
-
-    private fun disconnect() {
-        job?.cancel()
-        job = scope.launch {
-            connector.disconnect()
-            data.value = Data.Disconnected
+            if (isConnected()) {
+                disconnect()
+                data.value = Data.Disconnected
+            } else {
+                data.value = Data.Connecting
+                connect()
+                data.value = if (isConnected()) Data.Connected else Data.Error
+            }
         }
     }
 }
