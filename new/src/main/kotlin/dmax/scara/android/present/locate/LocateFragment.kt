@@ -1,9 +1,11 @@
 package dmax.scara.android.present.locate
 
+import android.graphics.PointF
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
 import dmax.scara.android.R
@@ -15,8 +17,11 @@ import dmax.scara.android.present.common.LocateView
 
 class LocateFragment : Fragment() {
 
+    private val startPoint = PointF(0f, 0f)
     private lateinit var measure: ViewMeasure
+
     private lateinit var locateView: LocateView
+    private lateinit var resetView: AppCompatImageButton
     private lateinit var coordinatesView: AppCompatTextView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
@@ -24,19 +29,31 @@ class LocateFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         measure = ViewMeasure(requireActivity())
+
+        resetView = view.findViewById(R.id.reset)
         locateView = view.findViewById(R.id.locate)
         coordinatesView = view.findViewById(R.id.coordinates)
 
-        locateView.listener = { point ->
-            val (x, y) = point.toPoint()
-            val mmX = measure.width2mm(x)
-            val mmY = measure.height2mm(y)
-
-            coordinatesView.text = requireContext().getString(
-                R.string.coordinates,
-                "%.2f".format(mmX),
-                "%.2f".format(mmY)
-            )
+        locateView.listener = this::locate
+        resetView.setOnClickListener {
+            locateView.point = startPoint
+            locate(startPoint)
         }
+    }
+
+    private fun locate(point: PointF) {
+        val (xPixels, yPixels) = point.toPoint()
+        val xCm = measure.widthInCm(xPixels)
+        val yCm = measure.heightInCm(yPixels)
+        coordinatesView.showCoordinates(xCm, yCm)
+        // todo update view model
+    }
+    
+    private fun AppCompatTextView.showCoordinates(xCm: Float, yCm: Float) {
+        text = requireContext().getString(
+            R.string.coordinates,
+            "%.2f".format(xCm),
+            "%.2f".format(yCm)
+        )
     }
 }

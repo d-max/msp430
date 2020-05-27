@@ -17,13 +17,13 @@ class ControlFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.initSeekBar(R.id.seekbar_base, R.id.base) {
-
+            // todo update view model
         }
         view.initSeekBar(R.id.seekbar_elbow, R.id.elbow) {
-
+            // todo update view model
         }
         view.initSeekBar(R.id.seekbar_wrist, R.id.wrist) {
-
+            // todo update view model
         }
     }
 

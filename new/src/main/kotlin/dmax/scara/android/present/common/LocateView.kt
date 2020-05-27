@@ -21,8 +21,13 @@ class LocateView @JvmOverloads constructor(
         private const val stoke = 2f
     }
 
-    var point: PointF = PointF(-1f, -1f)
     var listener: LocateListener? = null
+
+    var point: PointF = PointF(-1f, -1f)
+        set(value) {
+            field = value
+            invalidate()
+        }
 
     private val pointPaint: Paint = Paint().apply {
         color = ContextCompat.getColor(context, R.color.accent_active)
