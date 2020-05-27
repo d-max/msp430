@@ -23,7 +23,7 @@
         android:id="@+id/coordinates"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="16dp"
         android:textColor="@color/accent_active"
         android:textSize="14sp"
         app:layout_constraintTop_toBottomOf="@id/locate"
