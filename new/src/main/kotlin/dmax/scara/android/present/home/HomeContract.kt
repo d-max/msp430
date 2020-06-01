@@ -7,7 +7,7 @@ import dmax.scara.android.present.common.Event as BaseEvent
 interface HomeContract {
 
     sealed class Event : BaseEvent {
-        object Power : Event()
+        object OnPower : Event()
     }
 
     sealed class Data : BaseData {
@@ -20,5 +20,3 @@ interface HomeContract {
     abstract class Model : BaseViewModel<Event, Data>()
 
 }
-
-

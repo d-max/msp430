@@ -9,21 +9,25 @@ import androidx.annotation.IdRes
 import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.fragment.app.Fragment
 import dmax.scara.android.R
+import dmax.scara.android.present.control.ControlContract.*
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class ControlFragment : Fragment() {
+
+    private val model: Model by viewModel()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
         inflater.inflate(R.layout.fragment_control, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.initSeekBar(R.id.seekbar_base, R.id.base) {
-            // todo update view model
+            model.event(Event.OnBaseControl(angle = it))
         }
         view.initSeekBar(R.id.seekbar_elbow, R.id.elbow) {
-            // todo update view model
+            model.event(Event.OnElbowControl(angle = it))
         }
         view.initSeekBar(R.id.seekbar_wrist, R.id.wrist) {
-            // todo update view model
+            model.event(Event.OnWristControl(angle = it))
         }
     }
 

@@ -48,7 +48,7 @@ class HomeFragment : Fragment() {
         button = view.findViewById(R.id.button_connect)
 
         button.setOnClickListener {
-            model.event(Event.Power)
+            model.event(Event.OnPower)
         }
 
         observe(model.data) {
