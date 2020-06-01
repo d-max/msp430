@@ -15,12 +15,12 @@ import dmax.quadruped.connection.ConnectorServiceClient;
 
 public class MainActivity extends Activity {
 
-    @Bind(R.id.log) TextView log;
-    @Bind(R.id.connect) Button connect;
-    @Bind(R.id.servo) SeekBar seekBar;
-    @Bind(R.id.servo2) SeekBar seekBar2;
-    @Bind(R.id.servo3) SeekBar seekBar3;
-    @Bind(R.id.status) ImageView status;
+    TextView log;
+    Button connect;
+    SeekBar seekBar;
+    SeekBar seekBar2;
+    SeekBar seekBar3;
+    ImageView status;
 
     private ConnectorServiceClient connector = new ConnectorServiceClient();
     private ConnectorServiceClient.Callback connectionCallback = new ConnectionCallback();
@@ -30,7 +30,13 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.main);
-        ButterKnife.bind(this);
+
+        log = findViewById(R.id.log);
+        connect = findViewById(R.id.connect);
+        seekBar = findViewById(R.id.servo);
+        seekBar2 = findViewById(R.id.servo2);
+        seekBar3 = findViewById(R.id.servo3);
+        status = findViewById(R.id.status);
 
         initViews();
     }
