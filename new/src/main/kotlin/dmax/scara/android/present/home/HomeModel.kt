@@ -26,8 +26,8 @@ class HomeModel(
         scope.cancel()
     }
 
-    override fun event(e: Event) {
-        when(e) {
+    override fun event(event: Event) {
+        when(event) {
             Event.OnPower -> {
                 // was connecting and failed -> just turn off led
                 if (data.value == Data.Error) {

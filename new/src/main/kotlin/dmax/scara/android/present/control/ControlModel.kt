@@ -24,12 +24,12 @@ class ControlModel(
         scope.cancel()
     }
 
-    override fun event(e: Event) {
+    override fun event(event: Event) {
         scope.launch {
-            when(e) {
-                is Event.OnBaseControl -> bendBase(BendBaseCall.Input(e.angle))
-                is Event.OnElbowControl -> bendElbow(BendElbowCall.Input(e.angle))
-                is Event.OnWristControl -> bendWrist(BendWristCall.Input(e.angle))
+            when(event) {
+                is Event.OnBaseControl -> bendBase(BendBaseCall.Input(event.angle))
+                is Event.OnElbowControl -> bendElbow(BendElbowCall.Input(event.angle))
+                is Event.OnWristControl -> bendWrist(BendWristCall.Input(event.angle))
             }
         }
     }

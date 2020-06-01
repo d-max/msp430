@@ -6,6 +6,7 @@ import dmax.scara.android.actors.BendWristCall
 import dmax.scara.android.actors.ConnectActor
 import dmax.scara.android.actors.ConnectionStateRequest
 import dmax.scara.android.actors.DisconnectActor
+import dmax.scara.android.actors.MoveCall
 import dmax.scara.android.connect.Connector
 import dmax.scara.android.connect.bluetooth.BluetoothConnector
 import dmax.scara.android.dispatch.Dispatcher
@@ -13,6 +14,8 @@ import dmax.scara.android.present.control.ControlContract
 import dmax.scara.android.present.control.ControlModel
 import dmax.scara.android.present.home.HomeContract
 import dmax.scara.android.present.home.HomeModel
+import dmax.scara.android.present.locate.LocateContract
+import dmax.scara.android.present.locate.LocateModel
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -53,6 +56,10 @@ fun mvvm() = module {
         )
     }
 
+    viewModel<LocateContract.Model> {
+        LocateModel(move = get())
+    }
+
 }
 
 fun actors() = module {
@@ -74,6 +81,9 @@ fun actors() = module {
     }
     factory {
         BendWristCall(dispatcher = get(), state = get())
+    }
+    factory {
+        MoveCall(dispatcher = get(), state = get())
     }
 
 }

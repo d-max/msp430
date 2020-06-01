@@ -14,9 +14,12 @@ import dmax.scara.android.misc.component1
 import dmax.scara.android.misc.component2
 import dmax.scara.android.misc.toPoint
 import dmax.scara.android.present.common.LocateView
+import dmax.scara.android.present.locate.LocateContract.*
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class LocateFragment : Fragment() {
 
+    private val model: Model by viewModel()
     private val startPoint = PointF(0f, 0f)
     private lateinit var measure: ViewMeasure
 
@@ -46,7 +49,7 @@ class LocateFragment : Fragment() {
         val xCm = measure.widthInCm(xPixels)
         val yCm = measure.heightInCm(yPixels)
         coordinatesView.showCoordinates(xCm, yCm)
-        // todo update view model
+        model.event(Event.OnLocate(xCm.toInt(), yCm.toInt()))
     }
     
     private fun AppCompatTextView.showCoordinates(xCm: Float, yCm: Float) {

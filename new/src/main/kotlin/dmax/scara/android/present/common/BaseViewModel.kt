@@ -8,5 +8,5 @@ interface Data
 
 abstract class BaseViewModel<E : Event, D : Data> : ViewModel() {
     abstract val data: LiveData<D>
-    abstract fun event(e: E)
+    abstract fun event(event: E)
 }
