@@ -8,4 +8,4 @@ enum class Servo(val id: Byte) {
     Wrist(id = Config.Servo.wrist.toByte()),
 }
 
-data class Command(val servo: Servo, val angle: Byte)
+data class Command(val servo: Servo, val angle: Int)

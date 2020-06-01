@@ -8,12 +8,14 @@ import dmax.scara.android.connect.Connector
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.IOException
+import java.io.InputStream
 import java.io.OutputStream
 import java.util.UUID
 
 class BluetoothConnector : Connector {
 
     private var socket: BluetoothSocket? = null
+    private var inStream: InputStream? = null
     private var outStream: OutputStream? = null
 
     override val isConnected: Boolean
@@ -26,6 +28,7 @@ class BluetoothConnector : Connector {
         try {
             socket = device.createRfcommSocketToServiceRecord(uuid).apply {
                 connect()
+                inStream = inStream
                 outStream = outputStream
             }
         } catch (_: IOException) {
@@ -37,11 +40,14 @@ class BluetoothConnector : Connector {
         if (socket?.isConnected != true) return@withContext
 
         val (servo, angle) = command
-        val message = byteArrayOf(servo.id, angle)
+        val message = byteArrayOf(servo.id, angle.toByte())
         try {
             outStream?.let {
                 it.write(message)
                 it.flush()
+            }
+            inStream?.let {
+                val response = it.read()
             }
         } catch (_: IOException) {
             close()
@@ -55,6 +61,8 @@ class BluetoothConnector : Connector {
     private fun close() {
         outStream?.close()
         outStream = null
+        inStream?.close()
+        inStream = null
         socket?.close()
         socket = null
     }
