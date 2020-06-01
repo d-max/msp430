@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="launcherName">Quadruped</string>
-    <string name="connect">connect</string>
-    <string name="disconnect">disconnect</string>
+    <string name="launcherName">Scara</string>
+    <string name="navigation_home">Home</string>
+    <string name="navigation_tune">Control</string>
+    <string name="navigation_touch">Locate</string>
+    <string name="navigation_shapes">Draw</string>
+    <string name="coordinates">x = %1$s\t\t\t\ty = %2$s</string>
 </resources>
