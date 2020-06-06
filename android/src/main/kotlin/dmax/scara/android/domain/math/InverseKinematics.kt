@@ -20,9 +20,9 @@ data class Result<T : Number>(
 fun calculateAngles(condition: Condition<Int>): Result<Int> {
     val (a, b, x, y) = condition.toDouble()
     val l = sqrt(x.pow(2) + y.pow(2))
-    val alpha1 = atan(y / x)
-    val alpha2 = acos((l.pow(2) + a.pow(2) - b.pow(2)) / 2 * a * l)
-    val beta = acos((a.pow(2) + b.pow(2) - l.pow(2)) / 2 * a * b)
+    val alpha1 = atan(y / x).toAngles()
+    val alpha2 = acos((l.pow(2) + a.pow(2) - b.pow(2)) / (2 * a * l)).toAngles()
+    val beta = acos((a.pow(2) + b.pow(2) - l.pow(2)) / (2 * a * b)).toAngles()
     return Result(alpha1 + alpha2, beta).toInt()
 }
 
@@ -37,3 +37,5 @@ private fun <T : Number> Result<T>.toInt() = Result(
     alpha.toInt(),
     beta.toInt()
 )
+
+private fun Double.toAngles(): Double = this * 180 / 3.141592654
