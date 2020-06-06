@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.annotation.IdRes
 import androidx.appcompat.widget.AppCompatSeekBar
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
 import dmax.scara.android.R
 import dmax.scara.android.present.control.ControlContract.*
@@ -20,13 +21,20 @@ class ControlFragment : Fragment() {
         inflater.inflate(R.layout.fragment_control, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val baseAngle = view.findViewById<AppCompatTextView>(R.id.base_angle)
+        val elbowAngle = view.findViewById<AppCompatTextView>(R.id.elbow_angle)
+        val wristAngle = view.findViewById<AppCompatTextView>(R.id.wrist_angle)
+
         view.initSeekBar(R.id.seekbar_base, R.id.base) {
+            baseAngle.text = it.toString()
             model.event(Event.OnBaseControl(angle = it))
         }
         view.initSeekBar(R.id.seekbar_elbow, R.id.elbow) {
+            elbowAngle.text = it.toString()
             model.event(Event.OnElbowControl(angle = it))
         }
         view.initSeekBar(R.id.seekbar_wrist, R.id.wrist) {
+            wristAngle.text = it.toString()
             model.event(Event.OnWristControl(angle = it))
         }
     }

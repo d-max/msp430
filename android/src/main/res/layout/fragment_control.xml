@@ -139,4 +139,40 @@
         android:background="@color/surface"
         />
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/base_angle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/accent_active"
+        android:textSize="14sp"
+        app:layout_constraintTop_toTopOf="@id/base"
+        app:layout_constraintStart_toStartOf="@id/base"
+        app:layout_constraintEnd_toEndOf="@id/base"
+        app:layout_constraintBottom_toBottomOf="@id/base"
+        />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/elbow_angle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/accent_active"
+        android:textSize="14sp"
+        app:layout_constraintTop_toTopOf="@id/elbow"
+        app:layout_constraintStart_toStartOf="@id/elbow"
+        app:layout_constraintEnd_toEndOf="@id/elbow"
+        app:layout_constraintBottom_toBottomOf="@id/elbow"
+        />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/wrist_angle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/accent_active"
+        android:textSize="14sp"
+        app:layout_constraintTop_toTopOf="@id/wrist"
+        app:layout_constraintStart_toStartOf="@id/wrist"
+        app:layout_constraintEnd_toEndOf="@id/wrist"
+        app:layout_constraintBottom_toBottomOf="@id/wrist"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
