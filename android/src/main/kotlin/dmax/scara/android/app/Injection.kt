@@ -10,6 +10,7 @@ import dmax.scara.android.actors.MoveCall
 import dmax.scara.android.connect.Connector
 import dmax.scara.android.connect.bluetooth.BluetoothConnector
 import dmax.scara.android.dispatch.Dispatcher
+import dmax.scara.android.dispatch.SimpleDispatcher
 import dmax.scara.android.present.control.ControlContract
 import dmax.scara.android.present.control.ControlModel
 import dmax.scara.android.present.home.HomeContract
@@ -20,26 +21,21 @@ import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 fun core() = module {
-
+    single {
+        State()
+    }
     single<Connector> {
         BluetoothConnector()
     }
-
-    single {
-        State(arm = Config.createDefaultArm())
-    }
-
-    single {
-        Dispatcher(
+    single<Dispatcher> {
+        SimpleDispatcher(
             state = get(),
             connector = get()
         )
     }
-
 }
 
 fun mvvm() = module {
-
     viewModel<HomeContract.Model> {
         HomeModel(
             connect = get(),
@@ -47,7 +43,6 @@ fun mvvm() = module {
             isConnected = get()
         )
     }
-
     viewModel<ControlContract.Model> {
         ControlModel(
             bendBase = get(),
@@ -55,15 +50,12 @@ fun mvvm() = module {
             bendWrist = get()
         )
     }
-
     viewModel<LocateContract.Model> {
         LocateModel(move = get())
     }
-
 }
 
 fun actors() = module {
-
     factory {
         ConnectActor(connector = get())
     }
@@ -74,16 +66,15 @@ fun actors() = module {
         ConnectionStateRequest(connector = get())
     }
     factory {
-        BendBaseCall(dispatcher = get(), state = get())
+        BendBaseCall(dispatcher = get())
     }
     factory {
-        BendElbowCall(dispatcher = get(), state = get())
+        BendElbowCall(dispatcher = get())
     }
     factory {
-        BendWristCall(dispatcher = get(), state = get())
+        BendWristCall(dispatcher = get())
     }
     factory {
-        MoveCall(dispatcher = get(), state = get())
+        MoveCall(dispatcher = get())
     }
-
 }

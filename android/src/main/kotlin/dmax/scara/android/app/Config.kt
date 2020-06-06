@@ -1,14 +1,10 @@
 package dmax.scara.android.app
 
-import dmax.scara.android.domain.mechanics.Arm
-import dmax.scara.android.domain.mechanics.Bone
-import dmax.scara.android.domain.mechanics.Joint
-
 object Config {
 
     object Speed {
         const val angle = 3
-        const val delay = 30L
+        const val delay = 50L
     }
 
     /** Mapping joint to servo id */
@@ -19,16 +15,22 @@ object Config {
     }
 
     /** Size of legs in centimeters */
-    object Segment {
-        const val femur = 5
-        const val tibia = 5
+    object Segments {
+        const val femur = 9
+        const val tibia = 9
+    }
+
+    /** Shift of (0,0) in centimeters */
+    object Shift {
+        const val x = 8
+        const val y = 0
     }
 
     /** Default angles of joints in degrees */
     object Joints {
-        const val base = 90
-        const val elbow = 90
-        const val wrist = 90
+        const val base = 100
+        const val elbow = 50
+        const val wrist = 100
     }
 
     /** Bluetooth socket config */
@@ -36,13 +38,4 @@ object Config {
         const val address = "00:12:06:21:88:70"
         const val uuid = "00001101-0000-1000-8000-00805F9B34FB"
     }
-
-    fun createDefaultArm() = Arm(
-        femur = Bone(length = Segment.femur),
-        tibia = Bone(length = Segment.tibia),
-        fibula = Bone(length = Segment.femur),
-        base = Joint(angle = Joints.base),
-        elbow = Joint(angle = Joints.elbow),
-        wrist = Joint(angle = Joints.wrist)
-    )
 }
