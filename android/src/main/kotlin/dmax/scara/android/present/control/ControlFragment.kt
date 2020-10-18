@@ -10,21 +10,22 @@ import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
 import dmax.scara.android.R
-import dmax.scara.android.present.control.ControlContract.*
+import dmax.scara.android.misc.view
+import dmax.scara.android.present.control.ControlContract.Event
+import dmax.scara.android.present.control.ControlContract.Model
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class ControlFragment : Fragment() {
 
     private val model: Model by viewModel()
+    private val baseAngle: AppCompatTextView by view(R.id.base_angle)
+    private val elbowAngle: AppCompatTextView by view(R.id.elbow_angle)
+    private val wristAngle: AppCompatTextView by view(R.id.wrist_angle)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
         inflater.inflate(R.layout.fragment_control, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val baseAngle = view.findViewById<AppCompatTextView>(R.id.base_angle)
-        val elbowAngle = view.findViewById<AppCompatTextView>(R.id.elbow_angle)
-        val wristAngle = view.findViewById<AppCompatTextView>(R.id.wrist_angle)
-
         view.initSeekBar(R.id.seekbar_base, R.id.base) {
             baseAngle.text = it.toString()
             model.event(Event.OnBaseControl(angle = it))

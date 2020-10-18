@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
 import dmax.scara.android.R
@@ -13,35 +12,25 @@ import dmax.scara.android.misc.ViewMeasure
 import dmax.scara.android.misc.component1
 import dmax.scara.android.misc.component2
 import dmax.scara.android.misc.toPoint
+import dmax.scara.android.misc.view
 import dmax.scara.android.present.common.LocateView
-import dmax.scara.android.present.locate.LocateContract.*
+import dmax.scara.android.present.locate.LocateContract.Event
+import dmax.scara.android.present.locate.LocateContract.Model
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class LocateFragment : Fragment() {
 
     private val model: Model by viewModel()
-    private val startPoint = PointF(0f, 0f)
+    private val locateView: LocateView by view(R.id.locate)
+    private val coordinatesView: AppCompatTextView by view(R.id.coordinates)
     private lateinit var measure: ViewMeasure
-
-    private lateinit var locateView: LocateView
-    private lateinit var resetView: AppCompatImageButton
-    private lateinit var coordinatesView: AppCompatTextView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
         inflater.inflate(R.layout.fragment_locate, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         measure = ViewMeasure(requireActivity())
-
-        resetView = view.findViewById(R.id.reset)
-        locateView = view.findViewById(R.id.locate)
-        coordinatesView = view.findViewById(R.id.coordinates)
-
         locateView.listener = this::locate
-        resetView.setOnClickListener {
-            locateView.point = startPoint
-            locate(startPoint)
-        }
     }
 
     private fun locate(point: PointF) {
