@@ -1,0 +1,1 @@
+user -> [presentation -> actions -> dispatcher -> connector] -> hardware
