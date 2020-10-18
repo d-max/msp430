@@ -1,6 +1,9 @@
 package dmax.scara.android.app
 
 import android.app.Application
+import dmax.scara.android.app.injection.actors
+import dmax.scara.android.app.injection.core
+import dmax.scara.android.app.injection.mvvm
 import dmax.scara.android.connect.bluetooth.enableBluetooth
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

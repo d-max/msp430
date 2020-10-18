@@ -8,7 +8,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatToggleButton
 import androidx.fragment.app.Fragment
 import dmax.scara.android.R
-import dmax.scara.android.misc.observe
+import dmax.scara.android.present.misc.observe
 import dmax.scara.android.present.home.HomeContract.Data
 import dmax.scara.android.present.home.HomeContract.Event
 import dmax.scara.android.present.home.HomeContract.Model

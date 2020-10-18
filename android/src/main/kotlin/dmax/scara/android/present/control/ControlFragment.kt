@@ -10,7 +10,7 @@ import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
 import dmax.scara.android.R
-import dmax.scara.android.misc.view
+import dmax.scara.android.present.misc.view
 import dmax.scara.android.present.control.ControlContract.Event
 import dmax.scara.android.present.control.ControlContract.Model
 import org.koin.android.viewmodel.ext.android.viewModel

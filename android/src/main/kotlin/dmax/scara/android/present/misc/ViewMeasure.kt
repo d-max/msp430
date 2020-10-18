@@ -1,4 +1,4 @@
-package dmax.scara.android.misc
+package dmax.scara.android.present.misc
 
 import android.app.Activity
 import android.util.DisplayMetrics

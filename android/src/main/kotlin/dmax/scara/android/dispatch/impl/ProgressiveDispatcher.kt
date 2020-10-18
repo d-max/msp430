@@ -1,12 +1,12 @@
-package dmax.scara.android.dispatch
+package dmax.scara.android.dispatch.impl
 
-import dmax.scara.android.app.Config
-import dmax.scara.android.app.State
+import dmax.scara.android.app.misc.State
 import dmax.scara.android.connect.Command
+import dmax.scara.android.connect.Command.Servo
 import dmax.scara.android.connect.Connector
-import dmax.scara.android.connect.Servo
+import dmax.scara.android.dispatch.Dispatcher
+import dmax.scara.android.dispatch.Event
 import dmax.scara.android.domain.mechanics.Joint
-import dmax.scara.android.domain.motion.Motion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -19,10 +19,17 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
+// todo reimplement me
 class ProgressiveDispatcher(
+    private val speedConfig: SpeedConfig,
     private val state: State,
     private val connector: Connector
 ) : Dispatcher {
+
+    data class SpeedConfig(
+        val stepAngle: Byte,
+        val stepDelay: Long,
+    )
 
     private var job = Job()
     private val scope = CoroutineScope(Dispatchers.Main)
@@ -36,12 +43,12 @@ class ProgressiveDispatcher(
         }
     }
 
-    override fun dispatch(motion: Motion) {
-        val (base, elbow, wrist) = state
+    override suspend fun dispatch(event: Event) {
+        val (base, elbow, wrist) = state.arm
 
-        val baseNew = motion.base ?: base
-        val elbowNew = motion.elbow ?: elbow
-        val wristNew = motion.wrist ?: wrist
+        val baseNew = event.base ?: base
+        val elbowNew = event.elbow ?: elbow
+        val wristNew = event.wrist ?: wrist
 
         val baseAngles = (base.angle to baseNew.angle).calculate()
         val elbowAngles = (elbow.angle to elbowNew.angle).calculate()
@@ -52,27 +59,27 @@ class ProgressiveDispatcher(
         val wristCommands = wristAngles.map { Command(Servo.Wrist, it) }
 
         job.cancelChildren()
-        send(baseCommands, ::update)
-        send(elbowCommands, ::update)
-        send(wristCommands, ::update)
+        enqueue(baseCommands, ::update)
+        enqueue(elbowCommands, ::update)
+        enqueue(wristCommands, ::update)
     }
 
-    private fun send(
+    private fun enqueue(
         commands: List<Command>,
         update: (Command) -> Unit
     ) = scope.launch(job) {
         for (command in commands) {
             channel.send(command)
             update.invoke(command)
-            delay(Config.Speed.delay)
+            delay(speedConfig.stepDelay)
         }
     }
 
-    private fun update(command: Command) {
-        when(command.servo) {
-            Servo.Base -> state.base = Joint(command.angle)
-            Servo.Elbow -> state.elbow = Joint(command.angle)
-            Servo.Wrist -> state.wrist = Joint(command.angle)
+    private fun update(command: Command) = with(state) {
+        arm = when (command.servo) {
+            Servo.Base -> arm.copy(base = Joint(command.angle))
+            Servo.Elbow -> arm.copy(elbow = Joint(command.angle))
+            Servo.Wrist -> arm.copy(wrist = Joint(command.angle))
         }
     }
 
@@ -81,10 +88,10 @@ class ProgressiveDispatcher(
     private fun Pair<Int, Int>.calculate(): List<Int> {
         val (current, new) = this
         val diff = new - current
-        val count = abs(diff) / Config.Speed.angle
+        val count = abs(diff) / speedConfig.stepAngle
         val direction = diff.narrow()
         return List(count) { index ->
-            val shift = (index + 1) * Config.Speed.angle * direction
+            val shift = (index + 1) * speedConfig.stepAngle * direction
             current + shift
         }
     }

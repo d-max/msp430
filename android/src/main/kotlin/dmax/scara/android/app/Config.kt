@@ -1,41 +1,45 @@
 package dmax.scara.android.app
 
+import dmax.scara.android.connect.Command.Servo
+import dmax.scara.android.connect.Command.Servo.Base
+import dmax.scara.android.connect.Command.Servo.Elbow
+import dmax.scara.android.connect.Command.Servo.Wrist
+import dmax.scara.android.connect.bluetooth.BluetoothConnector
+import dmax.scara.android.dispatch.impl.ProgressiveDispatcher
+import dmax.scara.android.domain.mechanics.Arm
+import dmax.scara.android.domain.mechanics.Bone
+import dmax.scara.android.domain.mechanics.Joint
+
 object Config {
 
-    object Speed {
-        const val angle = 3
-        const val delay = 50L
-    }
-
-    /** Mapping joint to servo id */
-    object Servo {
-        const val base = 2
-        const val elbow = 1
-        const val wrist = 0
-    }
-
-    /** Size of legs in centimeters */
-    object Segments {
-        const val femur = 9
-        const val tibia = 9
-    }
-
-    /** Shift of (0,0) in centimeters */
-    object Shift {
-        const val x = 8
-        const val y = 0
-    }
-
-    /** Default angles of joints in degrees */
-    object Joints {
-        const val base = 100
-        const val elbow = 50
-        const val wrist = 100
-    }
+    /** Mock connector logging delay */
+    fun loggingDelay() = 100L
 
     /** Bluetooth socket config */
-    object Bluetooth {
-        const val address = "00:12:06:21:88:70"
-        const val uuid = "00001101-0000-1000-8000-00805F9B34FB"
+    fun socketConfig() = BluetoothConnector.SocketConfig(
+        address = "00:12:06:21:88:70",
+        uuid = "00001101-0000-1000-8000-00805F9B34FB"
+    )
+
+    /** Mapping joint to servo id */
+    fun servoPortMapper(servo: Servo): Byte = when(servo) {
+        Base -> 2
+        Elbow -> 1
+        Wrist -> 0
     }
+
+    /** Progressive dispatcher step */
+    fun speedConfig() = ProgressiveDispatcher.SpeedConfig(
+        stepAngle = 3,
+        stepDelay = 50L
+    )
+
+    /** Default arm configuration */
+    fun defaultArm() = Arm(
+        base = Joint(angle = 100),
+        elbow = Joint(angle = 50),
+        wrist = Joint(angle = 500),
+        femur = Bone(length = 9),
+        tibia = Bone(length = 9),
+    )
 }

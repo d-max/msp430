@@ -1,4 +1,4 @@
-package dmax.scara.android.misc
+package dmax.scara.android.present.misc
 
 import android.graphics.Point
 import android.graphics.PointF
@@ -7,8 +7,6 @@ import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import dmax.scara.android.R
-import dmax.scara.android.present.common.LocateView
 
 fun <T> Fragment.observe(liveData: LiveData<T>, consumer: (T) -> Unit) =
     liveData.observe(viewLifecycleOwner, Observer(consumer))

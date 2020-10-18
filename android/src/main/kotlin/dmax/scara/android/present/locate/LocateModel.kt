@@ -1,7 +1,7 @@
 package dmax.scara.android.present.locate
 
 import androidx.lifecycle.MutableLiveData
-import dmax.scara.android.actors.MoveCall
+import dmax.scara.android.actions.motion.MoveCall
 import dmax.scara.android.present.locate.LocateContract.Data
 import dmax.scara.android.present.locate.LocateContract.Event
 import dmax.scara.android.present.locate.LocateContract.Model

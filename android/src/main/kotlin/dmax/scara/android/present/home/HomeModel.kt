@@ -1,9 +1,9 @@
 package dmax.scara.android.present.home
 
 import androidx.lifecycle.MutableLiveData
-import dmax.scara.android.actors.ConnectActor
-import dmax.scara.android.actors.ConnectionStateRequest
-import dmax.scara.android.actors.DisconnectActor
+import dmax.scara.android.actions.connection.ConnectActor
+import dmax.scara.android.actions.connection.ConnectionStateRequest
+import dmax.scara.android.actions.connection.DisconnectActor
 import dmax.scara.android.present.home.HomeContract.Data
 import dmax.scara.android.present.home.HomeContract.Event
 import kotlinx.coroutines.Job

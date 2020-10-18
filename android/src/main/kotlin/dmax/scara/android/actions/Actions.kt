@@ -1,4 +1,4 @@
-package dmax.scara.android.actors
+package dmax.scara.android.actions
 
 interface Actor {
     suspend operator fun invoke()

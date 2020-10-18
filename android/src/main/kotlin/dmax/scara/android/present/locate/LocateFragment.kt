@@ -8,11 +8,11 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
 import dmax.scara.android.R
-import dmax.scara.android.misc.ViewMeasure
-import dmax.scara.android.misc.component1
-import dmax.scara.android.misc.component2
-import dmax.scara.android.misc.toPoint
-import dmax.scara.android.misc.view
+import dmax.scara.android.present.misc.ViewMeasure
+import dmax.scara.android.present.misc.component1
+import dmax.scara.android.present.misc.component2
+import dmax.scara.android.present.misc.toPoint
+import dmax.scara.android.present.misc.view
 import dmax.scara.android.present.common.LocateView
 import dmax.scara.android.present.locate.LocateContract.Event
 import dmax.scara.android.present.locate.LocateContract.Model

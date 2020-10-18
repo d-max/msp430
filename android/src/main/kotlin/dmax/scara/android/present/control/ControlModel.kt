@@ -1,9 +1,9 @@
 package dmax.scara.android.present.control
 
 import androidx.lifecycle.MutableLiveData
-import dmax.scara.android.actors.BendBaseCall
-import dmax.scara.android.actors.BendElbowCall
-import dmax.scara.android.actors.BendWristCall
+import dmax.scara.android.actions.motion.BendBaseCall
+import dmax.scara.android.actions.motion.BendElbowCall
+import dmax.scara.android.actions.motion.BendWristCall
 import dmax.scara.android.present.control.ControlContract.Data
 import dmax.scara.android.present.control.ControlContract.Event
 import dmax.scara.android.present.control.ControlContract.Model
