@@ -6,6 +6,8 @@ import dmax.scara.android.present.home.HomeContract
 import dmax.scara.android.present.home.HomeModel
 import dmax.scara.android.present.locate.LocateContract
 import dmax.scara.android.present.locate.LocateModel
+import dmax.scara.android.present.shapes.ShapesContract
+import dmax.scara.android.present.shapes.ShapesModel
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -26,5 +28,8 @@ fun mvvm() = module {
     }
     viewModel<LocateContract.Model> {
         LocateModel(move = get())
+    }
+    viewModel<ShapesContract.Model> {
+        ShapesModel(click = get())
     }
 }

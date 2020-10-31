@@ -13,7 +13,7 @@ import dmax.scara.android.domain.mechanics.Joint
 object Config {
 
     /** Mock connector logging delay */
-    fun loggingDelay() = 100L
+    fun loggingDelay() = 1000L
 
     /** Bluetooth socket config */
     fun socketConfig() = BluetoothConnector.SocketConfig(
