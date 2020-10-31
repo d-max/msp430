@@ -12,27 +12,27 @@ import org.koin.dsl.module
 
 fun actors() = module {
     factory {
-        ConnectActor(connector = get(qualifier = Qualifiers.connectorMock))
+        ConnectActor(connector = get())
     }
     factory {
-        DisconnectActor(connector = get(qualifier = Qualifiers.connectorMock))
+        DisconnectActor(connector = get())
     }
     factory {
-        ConnectionStateRequest(connector = get(qualifier = Qualifiers.connectorMock))
+        ConnectionStateRequest(connector = get())
     }
     factory {
-        BendBaseCall(dispatcher = get(qualifier = Qualifiers.dispatcherSimple))
+        BendBaseCall(dispatcher = get())
     }
     factory {
-        BendElbowCall(dispatcher = get(qualifier = Qualifiers.dispatcherSimple))
+        BendElbowCall(dispatcher = get())
     }
     factory {
-        BendWristCall(dispatcher = get(qualifier = Qualifiers.dispatcherSimple))
+        BendWristCall(dispatcher = get())
     }
     factory {
-        MoveCall(dispatcher = get(qualifier = Qualifiers.dispatcherSimple), state = get())
+        MoveCall(dispatcher = get(), state = get())
     }
     factory {
-        ClickActor(dispatcher = get(qualifier = Qualifiers.dispatcherSimple))
+        ClickActor(dispatcher = get())
     }
 }
