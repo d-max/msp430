@@ -14,6 +14,8 @@
     <color name="primary">@color/nickel_grey</color>
     <color name="primary_dark">@color/dark_stone</color>
     <color name="ripple">@color/nickel_grey_05</color>
+    <color name="stop">@color/tea_berry</color>
+    <color name="button_icons">@color/davis_grey</color>
     <color name="launcher_background">@color/crypt_grey</color>
 
 </resources>

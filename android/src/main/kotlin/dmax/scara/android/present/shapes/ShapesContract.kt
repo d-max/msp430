@@ -7,10 +7,14 @@ import dmax.scara.android.present.common.Event as BaseEvent
 interface ShapesContract {
 
     sealed class Event : BaseEvent {
-        object OnCLick : Event()
+        object Stop : Event()
+        object Click : Event()
         object DrawCircle : Event()
         object DrawSquare: Event()
         object DrawTriangle: Event()
+        object BendBaseInfinite: Event()
+        object BendElbowInfinite: Event()
+        object BendWristInfinite: Event()
     }
 
     object Data : BaseData

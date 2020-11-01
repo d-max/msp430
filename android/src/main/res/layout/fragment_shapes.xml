@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="64dp"
+    android:paddingBottom="32dp"
     >
 
     <TextView
@@ -63,6 +64,58 @@
         app:layout_constraintStart_toEndOf="@id/button_square"
         app:layout_constraintEnd_toEndOf="parent"
         app:icon="@drawable/ic_triangle"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        style="@style/Button"
+        android:id="@+id/button_bend_base"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="120dp"
+        app:layout_constraintTop_toBottomOf="@id/button_circle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/button_bend_elbow"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        android:layout_marginEnd="16dp"
+        app:icon="@drawable/ic_base"
+        app:iconTint="@null"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        style="@style/Button"
+        android:id="@+id/button_bend_elbow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/button_bend_base"
+        app:layout_constraintStart_toEndOf="@id/button_bend_base"
+        app:layout_constraintEnd_toStartOf="@id/button_bend_wrist"
+        android:layout_marginEnd="16dp"
+        app:icon="@drawable/ic_elbow"
+        app:iconTint="@null"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        style="@style/Button"
+        android:id="@+id/button_bend_wrist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/button_bend_base"
+        app:layout_constraintStart_toEndOf="@id/button_bend_elbow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:icon="@drawable/ic_wrist"
+        app:iconTint="@null"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        style="@style/Button"
+        android:id="@+id/button_stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:icon="@drawable/ic_stop"
+        app:iconTint="@color/stop"
         />
 
 

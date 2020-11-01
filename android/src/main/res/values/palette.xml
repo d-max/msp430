@@ -14,5 +14,6 @@
     <color name="electron_blue_30">#4D0C7CD1</color>
     <color name="electron_blue_50">#800C7CD1</color>
     <color name="transparent">#00000000</color>
+    <color name="tea_berry">#db394f</color>
 
 </resources>

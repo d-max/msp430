@@ -30,6 +30,11 @@ fun mvvm() = module {
         LocateModel(move = get())
     }
     viewModel<ShapesContract.Model> {
-        ShapesModel(click = get())
+        ShapesModel(
+            click = get(),
+            bendBaseInfiniteActor = get(),
+            bendElbowInfiniteActor = get(),
+            bendWristInfiniteActor = get()
+        )
     }
 }
