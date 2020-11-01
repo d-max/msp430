@@ -10,16 +10,13 @@ import dmax.scara.android.domain.mechanics.Joint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.channels.SendChannel
-import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-// todo reimplement me
 class ProgressiveDispatcher(
     private val speedConfig: SpeedConfig,
     private val state: State,
@@ -32,16 +29,7 @@ class ProgressiveDispatcher(
     )
 
     private var job = Job()
-    private val scope = CoroutineScope(Dispatchers.Main)
-    private val channel: SendChannel<Command>
-
-    init {
-        channel = scope.actor {
-            for (command in channel) {
-                connector.send(command)
-            }
-        }
-    }
+    private val scope = CoroutineScope(Dispatchers.Main) + job
 
     override suspend fun dispatch(event: Event) {
         val (base, elbow, wrist) = state.arm
@@ -58,18 +46,18 @@ class ProgressiveDispatcher(
         val elbowCommands = elbowAngles.map { Command(Servo.Elbow, it) }
         val wristCommands = wristAngles.map { Command(Servo.Wrist, it) }
 
-        job.cancelChildren()
         enqueue(baseCommands, ::update)
         enqueue(elbowCommands, ::update)
         enqueue(wristCommands, ::update)
+        job.join()
     }
 
     private fun enqueue(
         commands: List<Command>,
         update: (Command) -> Unit
-    ) = scope.launch(job) {
+    ) = scope.launch {
         for (command in commands) {
-            channel.send(command)
+            connector.send(command)
             update.invoke(command)
             delay(speedConfig.stepDelay)
         }

@@ -15,9 +15,8 @@ class MockConnector(private val delay: Long) : Connector {
     override suspend fun send(command: Command) = log("sending $command")
 
     private suspend fun log(message: String, block: () -> Unit = {}) {
-        println("$message : ")
+        println("$message")
         block()
         delay(delay)
-        println("done")
     }
 }
