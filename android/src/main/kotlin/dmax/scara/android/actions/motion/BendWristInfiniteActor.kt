@@ -16,7 +16,8 @@ class BendWristInfiniteActor(
         val amplitude = AngleAmplitude(
             step = 10,
             current = state.arm.wrist.angle,
-            max = 90
+            min = 90,
+            max = 160
         )
         while (true) {
             val angle = amplitude.next()

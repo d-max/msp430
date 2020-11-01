@@ -14,7 +14,6 @@ object Config {
 
     /** Mock connector logging delay */
     fun loggingDelay() = 1000L
-    fun operationalDelay() = 500L
 
     /** Bluetooth socket config */
     fun socketConfig() = BluetoothConnector.SocketConfig(
@@ -29,10 +28,13 @@ object Config {
         Wrist -> 0
     }
 
+    /** Simple dispatcher operational delay */
+    fun operationalDelay() = 250L
+
     /** Progressive dispatcher step */
     fun speedConfig() = ProgressiveDispatcher.SpeedConfig(
-        stepAngle = 3,
-        stepDelay = 50L
+        stepAngle = 5,
+        stepDelay = 250L
     )
 
     /** Default arm configuration */

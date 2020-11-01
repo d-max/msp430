@@ -14,9 +14,9 @@ class BendBaseInfiniteActor(
 
     override suspend operator fun invoke() {
         val amplitude = AngleAmplitude(
-            step = 10,
+            step = 30,
             current = state.arm.base.angle,
-            max = 90
+            max = 160
         )
         while (true) {
             val angle = amplitude.next()

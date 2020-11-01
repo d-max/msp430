@@ -8,15 +8,14 @@ import dmax.scara.android.dispatch.Dispatcher
 import dmax.scara.android.dispatch.Event
 import dmax.scara.android.domain.mechanics.Joint
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
+@Deprecated("This solution is not suitable for servo")
 class ProgressiveDispatcher(
     private val speedConfig: SpeedConfig,
     private val state: State,
@@ -27,9 +26,6 @@ class ProgressiveDispatcher(
         val stepAngle: Byte,
         val stepDelay: Long,
     )
-
-    private var job = Job()
-    private val scope = CoroutineScope(Dispatchers.Main) + job
 
     override suspend fun dispatch(event: Event) {
         val (base, elbow, wrist) = state.arm
@@ -46,16 +42,17 @@ class ProgressiveDispatcher(
         val elbowCommands = elbowAngles.map { Command(Servo.Elbow, it) }
         val wristCommands = wristAngles.map { Command(Servo.Wrist, it) }
 
-        enqueue(baseCommands, ::update)
-        enqueue(elbowCommands, ::update)
-        enqueue(wristCommands, ::update)
-        job.join()
+        coroutineScope {
+            enqueue(baseCommands, ::update)
+            enqueue(elbowCommands, ::update)
+            enqueue(wristCommands, ::update)
+        }
     }
 
-    private fun enqueue(
+    private fun CoroutineScope.enqueue(
         commands: List<Command>,
         update: (Command) -> Unit
-    ) = scope.launch {
+    ) = launch {
         for (command in commands) {
             connector.send(command)
             update.invoke(command)

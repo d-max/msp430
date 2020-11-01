@@ -10,8 +10,8 @@ class ClickActor(
 ) : Actor {
 
     override suspend operator fun invoke() {
-        val eventUp = Event(wrist = Joint(0))
-        val eventDown = Event(wrist = Joint(180))
+        val eventUp = Event(wrist = Joint(160))
+        val eventDown = Event(wrist = Joint(90))
         with(dispatcher) {
             dispatch(eventUp)
             dispatch(eventDown)

@@ -17,16 +17,16 @@ class SimpleDispatcher(
     override suspend fun dispatch(event: Event) {
         val (base, elbow, wrist) = event
         base?.let {
-            connector.send(Command(Servo.Base, base.angle))
-            state.arm = state.arm.copy(base = base)
+            connector.send(Command(Servo.Base, it.angle))
+            state.arm = state.arm.copy(base = it)
         }
         elbow?.let {
-            connector.send(Command(Servo.Elbow, elbow.angle))
-            state.arm = state.arm.copy(elbow = elbow)
+            connector.send(Command(Servo.Elbow, it.angle))
+            state.arm = state.arm.copy(elbow = it)
         }
         wrist?.let {
-            connector.send(Command(Servo.Wrist, wrist.angle))
-            state.arm = state.arm.copy(wrist = wrist)
+            connector.send(Command(Servo.Wrist, it.angle))
+            state.arm = state.arm.copy(wrist = it)
         }
         delay(delay)
     }

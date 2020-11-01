@@ -14,9 +14,9 @@ class BendElbowInfiniteActor(
 
     override suspend operator fun invoke() {
         val amplitude = AngleAmplitude(
-            step = 10,
+            step = 15,
             current = state.arm.elbow.angle,
-            max = 90
+            max = 130
         )
         while (true) {
             val angle = amplitude.next()

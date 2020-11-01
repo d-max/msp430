@@ -11,8 +11,8 @@ class AngleAmplitude(
     var up: Boolean = true
 
     fun next(): Int {
-        if (angle >= max) up = false
-        if (angle <= min) up = true
+        if (angle + step >= max) up = false
+        if (angle - step <= min) up = true
         angle = if (up) angle + step else angle - step
         return angle
     }
