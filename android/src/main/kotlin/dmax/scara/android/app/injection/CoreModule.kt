@@ -27,6 +27,7 @@ fun core() = module {
     }
     single<Dispatcher> {
         SimpleDispatcher(
+            delay = Config.operationalDelay(),
             state = get(),
             connector = get()
         )

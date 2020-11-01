@@ -14,6 +14,7 @@ object Config {
 
     /** Mock connector logging delay */
     fun loggingDelay() = 1000L
+    fun operationalDelay() = 500L
 
     /** Bluetooth socket config */
     fun socketConfig() = BluetoothConnector.SocketConfig(
@@ -38,7 +39,7 @@ object Config {
     fun defaultArm() = Arm(
         base = Joint(angle = 100),
         elbow = Joint(angle = 50),
-        wrist = Joint(angle = 500),
+        wrist = Joint(angle = 50),
         femur = Bone(length = 9),
         tibia = Bone(length = 9),
     )
