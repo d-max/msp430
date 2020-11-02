@@ -4,7 +4,6 @@
 
 #include <energia.h>
 #include <Wire.h>
-#include "system.h"
 #include "pwm.h"
 
 #define PWM_TICKS 4096
@@ -43,7 +42,7 @@ void Pwm::set_pwm(uint8_t channel, uint16_t duty_time) {
     Wire.write(PCA9685_REG_LED0_ON_L + 4 * channel);
     Wire.write(0);
     Wire.write(0);
-    Wire.write(duty_time);
+    Wire.write(duty_time & 0xFF);
     Wire.write(duty_time >> 8);
     Wire.endTransmission();
 }
@@ -57,9 +56,29 @@ void Pwm::set_frequency(float frequency) {
     write_byte(PCA9685_PRESCALE, calculate_prescale(frequency));
     // restore old mode
     write_byte(PCA9685_REG_MODE1, oldMode);
-    System::wait(5);
+    delay(5);
      // auto increment bit + restart
     write_byte(PCA9685_REG_MODE1, oldMode | 0xa1);
+}
+
+uint8_t * Pwm::read() {
+    static uint8_t array[12];
+    array[0] = read_byte(0x6);
+    array[1] = read_byte(0x7);
+    array[2] = read_byte(0x8);
+    array[3] = read_byte(0x9);
+
+    array[4] = read_byte(0xa);
+    array[5] = read_byte(0xb);
+    array[6] = read_byte(0xc);
+    array[7] = read_byte(0xd);
+
+    array[8] = read_byte(0xe);
+    array[9] = read_byte(0xf);
+    array[10] = read_byte(0x10);
+    array[11] = read_byte(0x11) >> 8;
+
+    return array;
 }
 
 uint8_t Pwm::read_byte(uint8_t address) {
@@ -67,8 +86,11 @@ uint8_t Pwm::read_byte(uint8_t address) {
     Wire.write(address);
     Wire.endTransmission();
 
+    Wire.beginTransmission(i2c_address);
     Wire.requestFrom((uint8_t) i2c_address, (uint8_t) 1);
-    return Wire.read();
+    uint8_t data = Wire.read();
+    Wire.endTransmission();
+    return data;
 }
 
 void Pwm::write_byte(uint8_t address, uint8_t value) {

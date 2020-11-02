@@ -28,6 +28,6 @@ uint8_t Uart::read(Package * package) {
     }
 }
 
-void Uart::write() {
-    Serial.write(1);
+void Uart::write(uint8_t data) {
+    Serial.write(data);
 }

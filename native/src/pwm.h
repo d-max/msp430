@@ -9,6 +9,7 @@ class Pwm {
         Pwm(uint8_t i2c_address, uint8_t frequency);
         void setup(void);
         void set_pwm(uint8_t channel, uint16_t duty_time);
+        uint8_t * read();
 
     private:
         uint8_t i2c_address;

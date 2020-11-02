@@ -16,7 +16,7 @@ class Uart {
     public:
         void setup();
         bool data_available();
-        void write();
+        void write(uint8_t data);
         uint8_t read(Package * package);
     private:
         uint8_t buffer[UART_PACKAGE_LENGTH];

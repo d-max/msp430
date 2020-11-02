@@ -11,7 +11,6 @@ set(CMAKE_EXE_LINKER_FLAGS "${MSP_CPU_FLAG}")
 # Source Files
 set(SOURCES
         src/main.cpp
-        src/system.cpp
         src/led.cpp
         src/uart.cpp
         src/pwm.cpp
@@ -21,7 +20,6 @@ set(SOURCES
 # Header files
 set(HEADERS
         src/hardware.h
-        src/system.h
         src/led.h
         src/uart.h
         src/pwm.h
