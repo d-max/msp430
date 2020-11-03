@@ -6,10 +6,8 @@ import dmax.scara.android.connect.Command.Servo
 import dmax.scara.android.connect.Connector
 import dmax.scara.android.dispatch.Dispatcher
 import dmax.scara.android.dispatch.Event
-import kotlinx.coroutines.delay
 
 class SimpleDispatcher(
-    private val delay: Long,
     private val state: State,
     private val connector: Connector
 ) : Dispatcher {
@@ -28,6 +26,5 @@ class SimpleDispatcher(
             connector.send(Command(Servo.Wrist, it.angle))
             state.arm = state.arm.copy(wrist = it)
         }
-        delay(delay)
     }
 }

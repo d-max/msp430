@@ -28,9 +28,6 @@ object Config {
         Wrist -> 0
     }
 
-    /** Simple dispatcher operational delay */
-    fun operationalDelay() = 250L
-
     /** Progressive dispatcher step */
     fun speedConfig() = ProgressiveDispatcher.SpeedConfig(
         stepAngle = 5,
