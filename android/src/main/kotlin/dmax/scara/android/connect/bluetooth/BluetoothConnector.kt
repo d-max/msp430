@@ -5,7 +5,11 @@ import android.bluetooth.BluetoothSocket
 import dmax.scara.android.connect.Command
 import dmax.scara.android.connect.Command.Servo
 import dmax.scara.android.connect.Connector
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.io.InputStream
@@ -22,6 +26,8 @@ class BluetoothConnector(
         val uuid: String,
     )
 
+    private val job = Job()
+    private val scope = CoroutineScope(Dispatchers.IO) + job
     private var socket: BluetoothSocket? = null
     private var inStream: InputStream? = null
     private var outStream: OutputStream? = null
@@ -40,6 +46,7 @@ class BluetoothConnector(
                     inStream = inputStream
                     outStream = outputStream
                 }
+                listen()
             } catch (_: IOException) {
                 close()
             }
@@ -52,14 +59,11 @@ class BluetoothConnector(
             val (servo, angle) = command
             val port = servoToPort(servo)
             val message = byteArrayOf(port, angle.toByte())
+//            printDutyCycles(port, angle)
             try {
                 outStream?.let {
                     it.write(message)
                     it.flush()
-                }
-                inStream?.let {
-                    // todo
-                    val response = it.read()
                 }
             } catch (_: IOException) {
                 close()
@@ -68,6 +72,25 @@ class BluetoothConnector(
 
     override suspend fun disconnect() = withContext(Dispatchers.IO) {
         close()
+    }
+
+    private fun listen() {
+        scope.launch {
+            inStream?.let {
+//                val appender = Appender()
+                while (true) {
+                    try {
+                        if (it.available() > 0) {
+                            val data = it.read()
+                            println("received: $data")
+//                            appender.append(data)
+                        }
+                    } catch (_ : IOException) {
+                        close()
+                    }
+                }
+            }
+        }
     }
 
     private fun close() {
