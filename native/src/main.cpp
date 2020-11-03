@@ -35,7 +35,8 @@ void read_from_uart();
 void read_from_pwm();
 
 void loop() {
-    move();
+    //move();
+    read_from_uart();
 }
 
 void move() {
@@ -52,9 +53,11 @@ void move() {
         } else {
             angle = angle - step;
         }
+        
         servos[2] -> set_angle(angle);
         servos[1] -> set_angle(angle);
-        delay(500);
+        //servos[0] -> set_angle(angle);
+        delay(1000);
     }
 }
 

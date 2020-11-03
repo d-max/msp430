@@ -39,7 +39,7 @@ void Pwm::setup() {
 
 void Pwm::set_pwm(uint8_t channel, uint16_t duty_time) {
     Wire.beginTransmission(i2c_address);
-    Wire.write(PCA9685_REG_LED0_ON_L + 4 * channel);
+    Wire.write(PCA9685_REG_LED0_ON_L + 4 * (channel + 4));
     Wire.write(0);
     Wire.write(0);
     Wire.write(duty_time & 0xFF);
