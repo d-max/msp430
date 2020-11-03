@@ -27,7 +27,10 @@ fun mvvm() = module {
         )
     }
     viewModel<LocateContract.Model> {
-        LocateModel(move = get())
+        LocateModel(
+            move = get(),
+            locate = get()
+        )
     }
     viewModel<ShapesContract.Model> {
         ShapesModel(

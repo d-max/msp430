@@ -6,6 +6,7 @@ import dmax.scara.android.app.misc.State
 import dmax.scara.android.dispatch.Dispatcher
 import dmax.scara.android.dispatch.Event
 import dmax.scara.android.domain.mechanics.Joint
+import kotlinx.coroutines.delay
 
 class BendElbowInfiniteActor(
     private val state: State,
@@ -22,6 +23,7 @@ class BendElbowInfiniteActor(
             val angle = amplitude.next()
             val event = Event(elbow = Joint(angle))
             dispatcher.dispatch(event)
+            delay(500)
         }
     }
 }

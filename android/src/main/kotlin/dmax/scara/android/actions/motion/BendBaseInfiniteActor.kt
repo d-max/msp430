@@ -6,6 +6,7 @@ import dmax.scara.android.app.misc.State
 import dmax.scara.android.dispatch.Dispatcher
 import dmax.scara.android.dispatch.Event
 import dmax.scara.android.domain.mechanics.Joint
+import kotlinx.coroutines.delay
 
 class BendBaseInfiniteActor(
     private val state: State,
@@ -14,7 +15,7 @@ class BendBaseInfiniteActor(
 
     override suspend operator fun invoke() {
         val amplitude = AngleAmplitude(
-            step = 30,
+            step = 10,
             current = state.arm.base.angle,
             max = 160
         )
@@ -22,6 +23,7 @@ class BendBaseInfiniteActor(
             val angle = amplitude.next()
             val event = Event(base = Joint(angle))
             dispatcher.dispatch(event)
+            delay(500)
         }
     }
 }
