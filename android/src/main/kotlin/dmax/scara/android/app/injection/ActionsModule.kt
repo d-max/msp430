@@ -11,6 +11,7 @@ import dmax.scara.android.actions.motion.BendWristCall
 import dmax.scara.android.actions.motion.BendWristInfiniteActor
 import dmax.scara.android.actions.motion.ClickActor
 import dmax.scara.android.actions.motion.MoveCall
+import dmax.scara.android.actions.state.AnglesRequest
 import dmax.scara.android.actions.state.PositionRequest
 import org.koin.dsl.module
 
@@ -50,5 +51,8 @@ fun actors() = module {
     }
     factory {
         PositionRequest(state = get())
+    }
+    factory {
+        AnglesRequest(state = get())
     }
 }

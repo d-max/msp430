@@ -16,20 +16,21 @@ fun mvvm() = module {
         HomeModel(
             connect = get(),
             disconnect = get(),
-            isConnected = get()
+            isConnected = get(),
         )
     }
     viewModel<ControlContract.Model> {
         ControlModel(
             bendBase = get(),
             bendElbow = get(),
-            bendWrist = get()
+            bendWrist = get(),
+            getAngles = get(),
         )
     }
     viewModel<LocateContract.Model> {
         LocateModel(
             move = get(),
-            locate = get()
+            locate = get(),
         )
     }
     viewModel<ShapesContract.Model> {
@@ -37,7 +38,7 @@ fun mvvm() = module {
             click = get(),
             bendBaseInfiniteActor = get(),
             bendElbowInfiniteActor = get(),
-            bendWristInfiniteActor = get()
+            bendWristInfiniteActor = get(),
         )
     }
 }
