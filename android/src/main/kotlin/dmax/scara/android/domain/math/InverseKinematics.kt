@@ -37,6 +37,7 @@ fun calculateAngles(condition: PositionCondition): AngleResult {
     val alpha1 = atan(y / x).toAngles()
     val alpha2 = acos((l.pow(2) + a.pow(2) - b.pow(2)) / (2 * a * l)).toAngles()
     val beta = acos((a.pow(2) + b.pow(2) - l.pow(2)) / (2 * a * b)).toAngles()
+    println("a=$a b=$b x=$x y=$y :: l=$l alpha1=$alpha1 alpha2=$alpha2 beta=$beta")
     return angleResult(alpha1 + alpha2, beta)
 }
 
@@ -47,6 +48,7 @@ fun calculateCoordinates(condition: AngleCondition): PositionResult {
     val alpha1 = alpha - alpha2
     val x = l * sin(alpha1)
     val y = l * cos(alpha1)
+    println("a=$a b=$b alpha=$alpha beta=$beta :: l=$l alpha1=$alpha1 alpha2=$alpha2 x=$x y=$y")
     return positionResult(x, y)
 }
 
