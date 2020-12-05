@@ -45,11 +45,15 @@ class LocateFragment : Fragment() {
     }
 
     private fun locate(point: PointF) {
-        val (xPixels, yPixels) = point.toPoint()
-        val xCm = measure.widthInCm(xPixels)
-        val yCm = measure.heightInCm(yPixels)
-        coordinatesView.showCoordinates(xCm, yCm)
-        model.event(Event.OnLocate(xCm.toInt(), yCm.toInt()))
+        val (x, y) = point.toPoint()
+        // invert axises
+        val xPixels = y
+        val yPixels = x
+        val xMm = measure.widthInMm(yPixels)
+        val yMm = measure.heightInMm(xPixels)
+
+        coordinatesView.showCoordinates(xMm, yMm)
+        model.event(Event.OnLocate(xMm.toInt(), yMm.toInt()))
     }
     
     private fun AppCompatTextView.showCoordinates(xCm: Float, yCm: Float) {
