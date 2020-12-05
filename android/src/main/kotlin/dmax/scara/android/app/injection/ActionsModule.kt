@@ -10,6 +10,7 @@ import dmax.scara.android.actions.motion.BendElbowInfiniteActor
 import dmax.scara.android.actions.motion.BendWristCall
 import dmax.scara.android.actions.motion.BendWristInfiniteActor
 import dmax.scara.android.actions.motion.ClickActor
+import dmax.scara.android.actions.motion.DemoActor
 import dmax.scara.android.actions.motion.MoveCall
 import dmax.scara.android.actions.state.AnglesRequest
 import dmax.scara.android.actions.state.PositionRequest
@@ -54,5 +55,8 @@ fun actors() = module {
     }
     factory {
         AnglesRequest(state = get())
+    }
+    factory {
+        DemoActor(dispatcher = get())
     }
 }

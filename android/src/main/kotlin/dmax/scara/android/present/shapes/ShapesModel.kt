@@ -5,6 +5,7 @@ import dmax.scara.android.actions.motion.BendBaseInfiniteActor
 import dmax.scara.android.actions.motion.BendElbowInfiniteActor
 import dmax.scara.android.actions.motion.BendWristInfiniteActor
 import dmax.scara.android.actions.motion.ClickActor
+import dmax.scara.android.actions.motion.DemoActor
 import dmax.scara.android.present.shapes.ShapesContract.Data
 import dmax.scara.android.present.shapes.ShapesContract.Event
 import dmax.scara.android.present.shapes.ShapesContract.Model
@@ -20,6 +21,7 @@ class ShapesModel(
     private val bendBaseInfiniteActor: BendBaseInfiniteActor,
     private val bendElbowInfiniteActor: BendElbowInfiniteActor,
     private val bendWristInfiniteActor: BendWristInfiniteActor,
+    private val demoActor: DemoActor
 ) : Model() {
 
     private val job = Job()
@@ -33,7 +35,8 @@ class ShapesModel(
     override fun event(event: Event) {
         when(event) {
             Event.Stop -> job.cancelChildren()
-            Event.Click -> scope.launch { click() }
+//            Event.Click -> scope.launch { click() }
+            Event.Click -> scope.launch { demoActor() }
             Event.BendBaseInfinite -> scope.launch { bendBaseInfiniteActor() }
             Event.BendElbowInfinite -> scope.launch { bendElbowInfiniteActor() }
             Event.BendWristInfinite -> scope.launch { bendWristInfiniteActor() }

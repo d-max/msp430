@@ -39,6 +39,7 @@ fun mvvm() = module {
             bendBaseInfiniteActor = get(),
             bendElbowInfiniteActor = get(),
             bendWristInfiniteActor = get(),
+            demoActor = get()
         )
     }
 }

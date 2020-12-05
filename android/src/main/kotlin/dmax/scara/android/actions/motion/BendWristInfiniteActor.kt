@@ -15,10 +15,10 @@ class BendWristInfiniteActor(
 
     override suspend operator fun invoke() {
         val amplitude = AngleAmplitude(
-            step = 30,
+            step = 20,
             current = state.arm.wrist.angle,
-            min = 90,
-            max = 160
+            min = 20,
+            max = 80
         )
         while (true) {
             val angle = amplitude.next()
