@@ -11,6 +11,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.withContext
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -42,10 +44,12 @@ class ProgressiveDispatcher(
         val elbowCommands = elbowAngles.map { Command(Servo.Elbow, it) }
         val wristCommands = wristAngles.map { Command(Servo.Wrist, it) }
 
-        coroutineScope {
-            enqueue(baseCommands, ::update)
-            enqueue(elbowCommands, ::update)
-            enqueue(wristCommands, ::update)
+        withContext(newSingleThreadContext("Queue")) {
+            coroutineScope {
+                enqueue(baseCommands, ::update)
+                enqueue(elbowCommands, ::update)
+                enqueue(wristCommands, ::update)
+            }
         }
     }
 
