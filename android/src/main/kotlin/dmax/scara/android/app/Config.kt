@@ -31,7 +31,7 @@ object Config {
     /** Progressive dispatcher step */
     fun speedConfig() = ProgressiveDispatcher.SpeedConfig(
         stepAngle = 5,
-        stepDelay = 250L
+        stepDelay = 30L
     )
 
     /** Default arm configuration */
@@ -39,7 +39,7 @@ object Config {
         base = Joint(angle = 100),
         elbow = Joint(angle = 50),
         wrist = Joint(angle = 50),
-        femur = Bone(length = 9),
-        tibia = Bone(length = 9),
+        femur = Bone(length = 50),
+        tibia = Bone(length = 40),
     )
 }

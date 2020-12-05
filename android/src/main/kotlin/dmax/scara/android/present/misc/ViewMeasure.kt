@@ -6,21 +6,21 @@ import kotlin.math.round
 
 class ViewMeasure(activity: Activity) {
 
-    private val cmPerInch = 2.54f
+    private val mmPerInch = 25.4f
     private val metrics: DisplayMetrics = DisplayMetrics()
 
     init {
         activity.windowManager.defaultDisplay.getMetrics(metrics)
     }
 
-    fun widthInCm(pixels: Int): Float {
+    fun widthInMm(pixels: Int): Float {
         val xInches = pixels / metrics.xdpi
-        val xMm = xInches * cmPerInch
+        val xMm = xInches * mmPerInch
         return round(xMm)
     }
 
-    fun heightInCm(pixels: Int): Float {
+    fun heightInMm(pixels: Int): Float {
         val yInches = pixels / metrics.ydpi
-        return yInches * cmPerInch
+        return yInches * mmPerInch
     }
 }
