@@ -1,6 +1,6 @@
 # robotics-native
 
-This is software for scara robot.
+This is software for SCARA robot.
 Contains native firmware and android application (bluetooth controller).
 
 
